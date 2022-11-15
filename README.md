@@ -1,27 +1,42 @@
-# Lab4App
+## Setup
+In the root directory of the repo, run:
+```
+# install server dependencies in the root(server) directory
+npm install
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 14.2.9.
+# install frontend dependencies in the client(Angular) directory
+cd client
+npm install
+```
 
-## Development server
+Or, run `npm run setup` in the root directory which runs a script to execute all the above commands. (Not include setup MongoDB)
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Development
+# Option 1: Run both Angular and Express server in two separate terminal so that changes can be update simultaneously
 
-## Code scaffolding
+```
+# start Angular
+cd client
+ng serve --open
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+# go back to the root directory
+cd ..
 
-## Build
+# run the server (nodemon will auto re-run the server when a change is made)
+nodemon server.js
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+# Option 2: Only run the Express server, changes will not update simultaneously. Everytime when a change is made to the project, the following commands need to be re-run.
 
-## Running unit tests
+```
+# build the Angular app
+cd client
+npm run build
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# go back to the root directory
+cd ..
 
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+# run the server (nodemon will auto re-run the server when a change is made)
+nodemon server.js
+```
+Or, run `npm run build-run` in the root directory which runs a script to execute all the above commands
