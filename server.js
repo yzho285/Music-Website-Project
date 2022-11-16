@@ -18,16 +18,13 @@ mongoose.set('bufferCommands', false);
 
 // import the mongoose models
 const { Student } = require('./models/student')
+const { Genre } = require('./models/genre')
 
 // body-parser: middleware for parsing HTTP JSON body into a usable object
 const bodyParser = require('body-parser') 
 app.use(bodyParser.json())
 
 /*** Webpage routes below **********************************/
-
-// // static js directory
-// app.use("/js", express.static(path.join(__dirname, '/public/js')))
-
 // route for root
 // Serve the build
 app.use(express.static(__dirname + "/client/dist/lab4-app"));
@@ -74,7 +71,7 @@ app.get("/students", (req, res) => {
     Student.find().then(
         students => {
             log();
-            res.send({ students }); // can wrap in object if want to add more properties
+            res.send({ students });
         },
         error => {
             res.status(500).send(error); // server error
@@ -82,6 +79,19 @@ app.get("/students", (req, res) => {
     );
 });
 
+
+// Get all genres
+app.get("/genres", (req, res) => {
+    Genre.find().then(
+        genres => {
+            log();
+            res.send({ genres });
+        },
+        error => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
 
 
 /*************************************************/
