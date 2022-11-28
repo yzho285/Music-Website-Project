@@ -19,6 +19,7 @@ mongoose.set('bufferCommands', false);
 // import the mongoose models
 const { Student } = require('./models/student')
 const { Genre } = require('./models/genre')
+const { User } = require("./models/user");
 
 // body-parser: middleware for parsing HTTP JSON body into a usable object
 const bodyParser = require('body-parser') 
@@ -33,6 +34,78 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + "/client/dist/lab4-app/index.html");
 })
 /*************************************************/
+
+/*** User Authentication Routes below ************************************/
+// create a new user
+app.post("/users/signup", (req, res) => {
+    log(req.body);
+
+    // Create a new user
+    const user = new User({
+        email: req.body.email,
+        password: req.body.password,
+        userName: req.body.userName
+    });
+
+    // Save the user
+    user.save().then(
+        user => {
+            res.send(user);
+        },
+        error => {
+            res.status(400).send(error); // 400 for bad request
+        }
+    );
+});
+
+// express-session for managing user sessions
+const session = require("express-session");
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// Create a session cookie
+app.use(
+    session({
+        secret: "oursecret",
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            expires: 60000,
+            httpOnly: true
+        }
+    })
+);
+
+// user login
+app.post("/users/login", (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    log(email, password);
+    // find the user by email
+    User.findByEmailPassword(email, password)
+        .then(user => {
+			req.session.user = user._id;
+            req.session.email = user.email;
+            res.send({ currentUser: user.email, id: user._id });
+        })
+        .catch(error => {
+            res.status(400).send()
+        });
+});
+
+
+// logout a user
+app.get("/users/logout", (req, res) => {
+    // Remove the session
+    req.session.destroy(error => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send()
+        }
+    });
+});
+
 /*** API Routes below ************************************/
 // a POST route to *create* a student example 
 app.post('/students', (req, res) => {
