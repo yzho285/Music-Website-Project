@@ -31,11 +31,17 @@ const UserSchema = new mongoose.Schema({
 		required: true,
 		minlength: 3
 	},
-    role: { // admin 1, user 2
-        type: String,
-        required: false,
+    role: {
+        type: String,  // admin 1, user 2
+        required: true,
         dafault: '2'
     },
+	activate: {
+        type: String,  // activate 1, deactivated 0
+        required: true,
+        dafault: '1'
+
+	},
     playlists: {
         type: Array,
         required: false,

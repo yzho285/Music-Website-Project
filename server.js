@@ -44,16 +44,20 @@ app.post("/users/signup", (req, res) => {
     const user = new User({
         email: req.body.email,
         password: req.body.password,
-        userName: req.body.userName
+        userName: req.body.userName,
+		role: req.body.role,
+		activate: req.body.activate,
+		playlists: [],
+		reviews: []
     });
 
     // Save the user
     user.save().then(
         user => {
-            res.send(user);
+            res.send(user)
         },
         error => {
-            res.status(400).send(error); // 400 for bad request
+            res.status(400).send(error)
         }
     );
 });
@@ -77,16 +81,15 @@ app.use(
 
 // user login
 app.post("/users/login", (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    log(email, password);
+    const email = req.body.email
+    const password = req.body.password
+    log(email, password)
     // find the user by email
     User.findByEmailPassword(email, password)
         .then(user => {
 			req.session.user = user._id;
             req.session.email = user.email;
-            res.send({ currentUser: user.email, id: user._id });
+            res.send({ currentUser: user.email, id: user._id, userName: user.userName });
         })
         .catch(error => {
             res.status(400).send()
