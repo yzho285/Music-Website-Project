@@ -120,3 +120,7 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+client/build/
+client/package-lock.json
+client/node_modules/
