@@ -21,7 +21,7 @@ export class AppComponent {
     // this.sharedService.onLoginEvent.emit(JSON.parse(localStorage["currentUser"].userName));
     const userInfo = localStorage.getItem("currentUser")
     if (userInfo) {
-      this.loginStatus = JSON.parse(userInfo).userName
+      this.loginStatus = JSON.parse(userInfo)?.userName !== null ? 'Login' : JSON.parse(userInfo)?.userName
     }
   }
 
