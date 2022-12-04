@@ -41,11 +41,9 @@ export class LoginComponent implements OnInit {
         }
       })
       .then(json => {
-        console.log(json)
-        // save current login user
-        window.sessionStorage["currentUser"] = JSON.stringify(json)
+        // save current login user to localstorage
+        localStorage.setItem('currentUser', JSON.stringify(json));
         this.sharedService.onLoginEvent.emit(json.userName);
-        // this.sharedService.setLoginStatus(json.userName)
         this.router.navigate(['/', 'example']);
       })
       .catch(e => {

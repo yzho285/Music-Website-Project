@@ -16,6 +16,10 @@ const PlaylistSchema = new mongoose.Schema({
 		maxlegth: 50,
         unique: true
 	},
+    userid: {
+		type: String,
+		required: true
+    },
 	visible: {
         type: String, // 1 can be seen, 0 cannot
         required: true,
@@ -23,8 +27,7 @@ const PlaylistSchema = new mongoose.Schema({
     },
     tracks: {
         type: Array,
-        required: true,
-        default: []
+        required: true
     },
     lastModifiedTime: {
         type: String,

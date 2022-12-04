@@ -18,12 +18,15 @@ export class AppComponent {
    );
   }
   ngOnInit(): void {
-    // current login user
-    log(window.sessionStorage["currentUser"])
+    // this.sharedService.onLoginEvent.emit(JSON.parse(localStorage["currentUser"].userName));
+    const userInfo = localStorage.getItem("currentUser")
+    if (userInfo) {
+      this.loginStatus = JSON.parse(userInfo).userName
+    }
   }
 
   logOut() {
-    window.sessionStorage["currentUser"] = null
+    localStorage["currentUser"] = null
     this.sharedService.onLoginEvent.emit('Login')
     this.httpService.logoutService()
       .then(res => {
