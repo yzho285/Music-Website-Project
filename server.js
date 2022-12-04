@@ -94,7 +94,7 @@ app.post("/users/login", (req, res) => {
         .then(user => {
 			req.session.user = user._id;
             req.session.email = user.email;
-            res.send({ currentUser: user.email, id: user._id, userName: user.userName });
+            res.send({ currentUser: user.email, id: user._id, userName: user.userName, role: user.role });
         })
         .catch(error => {
             res.status(400).send()
@@ -153,64 +153,142 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
     );
 });
 
-// get all track lists created by a user
-app.get('/playlist/:id', (req, res) => {
-	// const lists = trackLstDB.all()
-	// log(Object.keys(lists))
-	// res.status(200).send({ lists })
+// return all playlists detail info created by a user using their userid
+// /playlist？userid=xxx
+app.get('/playlist', (req, res) => {
+    User.findById(req.query.userid.toString())
+        .then(user => {
+            if (!user) {
+                res.status(404).send();
+            } else {
+                log(user.playlists)
+                Playlist.find({'_id':{$in: user.playlists}})
+                    .then(playlists => {
+                        res.send(playlists)
+                    })
+            }
+        })
+        .catch(error => {
+            res.status(400).send(); // bad request for changing the student.
+        });
 })
 
 // create a new playlist by a user
 app.post('/playlist', (req, res) => {
-	const errors = validationResult(req)
-	if (!errors.isEmpty()) {
-		return res.status(400).json({ errors: errors.array() })
-	}
-    log(req.body)
+	// const errors = validationResult(req)
+	// if (!errors.isEmpty()) {
+	// 	return res.status(400).json({ errors: errors.array() })
+	// }
+    let oldUserPlaylists = []
+    User.findById(req.body.userid.toString())
+        .then(user => {
+            if (!user) {
+                res.status(404).send();
+            } else {
+                log('playlists number: ' + user.playlists.length)
+                oldUserPlaylists = user.playlists
+                if(user.playlists.length >= 20){
+                    res.status(400).send('The number of playlists has already reach max limit');
+                }
+            }
+        })
+        .catch(error => {
+            res.status(400).send(); // bad request for changing the student.
+        });
 
     const newList = new Playlist({
         listname: req.body.listname.toString(),
         username: req.body.username.toString(),
-        lastModifiedTime: new Date()
+        lastModifiedTime: new Date(),
+        totalPlaytime: '00:00',
+        userid: req.body.userid.toString()
     });
-    let totalPlaytime = '00:00'
-    const tracklist = []
-	req.body.tracks.forEach(id => {
-        // find track by id
-        log('trackid: ' + id)
-		Track.findOne({ track_id: id.toString() })
-            .then(track => {
-                if (!track) {
-                    res.status(404).send(); // could not find this student
-                } else {
-                    tracklist.push(track)
-                    totalPlaytime = convertToSeconds(track.track_duration) + convertToSeconds(newList.totalPlaytime)
-                    totalPlaytime = convertToDuration(totalPlaytime)
-                }
+
+    if(req.body.description){
+        newList.description = req.body.description.toString()
+    }
+    if(req.body.visible){
+        newList.visible = req.body.visible.toString()
+    }
+
+    // find each track by track id in the req.body
+    Track.find({'track_id':{$in: req.body.tracks}})
+        .then(tracks =>{
+            // add on playtime
+            tracks.forEach(track => {
+                newList.totalPlaytime = convertToDuration(convertToSeconds(track.track_duration) + convertToSeconds(newList.totalPlaytime))
             })
-            .catch(error => {
-                log(error)
-                res.status(500).send(); // server error
-            });
-	})
-    newList.tracks = tracklist
-    newList.totalPlaytime = totalPlaytime
-    newList.save().then(
-        result => {
-            res.send(result);
-        },
-        error => {
-            res.status(400).send(error); // 400 for bad request
-        }
-    );
+            // update tracks
+            newList.tracks = tracks
+            newList.save().then(
+                result => {
+                    // update old list
+                    oldUserPlaylists.push(result._id)
+                    // update new playlist id to the user's record
+                    User.findByIdAndUpdate(req.body.userid.toString(), { playlists: oldUserPlaylists }, { new: true })
+                        .then(user => {
+                            if (!user) {
+                                res.status(404).send('User does not exist')
+                            } else {
+                                res.send(result);
+                            }
+                        })
+                        .catch(error => {
+                            res.status(400).send(); // bad request for changing the student.
+                        });
+                },
+                error => {
+                    res.status(400).send(error); // 400 for bad request
+                }
+            );
+
+        })
+        .catch(error => {
+            log(error)
+            res.status(500).send(); // server error
+        });
 })
 
+/// delete a playlist by listID and update info by userid
+app.delete("/playlist", (req, res) => {
+    const id = req.query.listid.toString()
+    const userid = req.query.userid.toString()
+    Playlist.findByIdAndRemove(id)
+        .then(playlist => {
+            if (!playlist) {
+                res.status(404).send('Playlist does not exist'); // not find the playlist
+            } else {
+                User.findById(userid)
+                .then(user => {
+                    if (!user) {
+                        res.status(404).send('Cannot find user');
+                    } else {
+                        // also delete the playlist id inside user record
+                        user.playlists = user.playlists.filter(listid => {
+                            log(listid.toString(), id)
+                            return listid.toString() !== id
+                        })
+                        user.save().then(
+                            result => {
+                                res.send(playlist);
+                            },
+                            error => {
+                                res.status(400).send(error); // 400 for bad request
+                            }
+                        );
+                    }
+                })
+                .catch(error => {
+                    res.status(400).send(); // bad request for changing the student.
+                });
+            }
+        })
+        .catch(error => {
+            res.status(500).send(); // server error, could not delete.
+        });
+});
 
 /*** Helper Functions ************************************/
-function updateUserPlayListID(){
-
-}
-
 
 function convertToSeconds(duration) {
 	const time = duration.split(":")
