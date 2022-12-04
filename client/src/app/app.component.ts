@@ -18,6 +18,11 @@ export class AppComponent {
    );
   }
   ngOnInit(): void {
+    // this.sharedService.onLoginEvent.emit(JSON.parse(localStorage["currentUser"].userName));
+    const userInfo = localStorage.getItem("currentUser")
+    if (userInfo) {
+      this.loginStatus = JSON.parse(userInfo).userName
+    }
   }
 
   logOut() {

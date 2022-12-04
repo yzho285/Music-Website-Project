@@ -23,10 +23,6 @@ export class ExampleComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // log(this.routerInfo.snapshot.params)
-    // log(this.routerInfo.snapshot.params['userEmail'])
-    // log(this.routerInfo.snapshot.params['userId'])
-    log(window.sessionStorage["currentUser"])
   }
 
   getAllGenres() {

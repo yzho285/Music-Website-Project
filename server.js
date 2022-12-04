@@ -17,7 +17,6 @@ const { mongoose } = require('./db/mongoose')
 mongoose.set('bufferCommands', false);  
 
 // import the mongoose models
-const { Student } = require('./models/student')
 const { Genre } = require('./models/genre')
 const { User } = require("./models/user");
 const { Track } = require("./models/track");
@@ -155,7 +154,7 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
 
 // return all playlists detail info created by a user using their userid
 // /playlist？userid=xxx
-app.get('/playlist', (req, res) => {
+app.get('/playlists', (req, res) => {
     User.findById(req.query.userid.toString())
         .then(user => {
             if (!user) {
@@ -287,6 +286,69 @@ app.delete("/playlist", (req, res) => {
             res.status(500).send(); // server error, could not delete.
         });
 });
+
+// delete/add a track to a playlist
+// updateOrDelete 1 update 0 delete
+app.post('/playlist/tracks/update', (req, res) => {
+    const newTrackId = req.body.trackid.toString()
+    const playlistId = req.body.playlistid.toString()
+    const updateOrDelete = req.body.updateOrDelete.toString()
+
+    Track.findOne({ track_id: newTrackId })
+        .then(track => {
+            if (!track) {
+                res.status(404).send('Track does not exist');
+            } else {
+                Playlist.findById(playlistId)
+                    .then(playlist => {
+                        if (!Playlist) {
+                            res.status(404).send('Playlist does not exist');
+                        } else {
+                            if (updateOrDelete === '1') {
+                                playlist.tracks.push(track)
+                                playlist.totalPlaytime = convertToDuration(convertToSeconds(track.track_duration) + convertToSeconds(playlist.totalPlaytime))
+                            } else if (updateOrDelete === '0') {
+                                playlist.tracks = playlist.tracks.filter(list => {
+                                    return list.track_id !== newTrackId
+                                })
+                                playlist.totalPlaytime = convertToDuration(convertToSeconds(playlist.totalPlaytime) - convertToSeconds(track.track_duration))
+                            }
+                            playlist.save().then(
+                                result => {
+                                    res.send(playlist);
+                                }),
+                                error => {
+                                    res.status(400).send(error); // 400 for bad request
+                                }
+                        }
+                    })
+            }
+        })
+        .catch(error => {
+            res.status(400).send(); // bad request for changing the student.
+        });
+
+})
+
+// update visible, description of a playlist
+app.post('/playlist/update', (req, res) => {
+    const playlistId = req.body.playlistid.toString()
+    const { visible, description } = req.body;
+    const changes = { visible, description, lastModifiedTime: new Date() };
+    
+    Playlist.findByIdAndUpdate(playlistId, { $set: changes }, { new: true })
+        .then(playlist => {
+            if (!playlist) {
+                res.status(404).send('Playlist does not exist');
+            } else {
+                res.send(playlist);
+            }
+        })
+        .catch(error => {
+            res.status(400).send(); // bad request for changing the student.
+        });
+
+})
 
 /*** Helper Functions ************************************/
 
