@@ -17,7 +17,7 @@ export class UnauthenticatedUserComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  searchTrack(e:Event) {
+  searchTrack() {
     const searchInput = 'awol';
     this.httpService.queryTracksService(searchInput)
       .then(res => {
@@ -29,8 +29,8 @@ export class UnauthenticatedUserComponent implements OnInit {
         }
       })
       .then(json => {
+        console.log(json)
         this.searchTrackResult = json.tracks
-        console.log("a")
       })
       .catch(error => {
         console.log(error);
