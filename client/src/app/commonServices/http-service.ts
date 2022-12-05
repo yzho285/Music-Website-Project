@@ -138,4 +138,69 @@ export class HttpService {
         return fetch(request)
     }
 
+    // get first 10 genres
+    // sort by modified time
+    get10Playlist() {
+        const url = this.host + "/public/playlists";
+        return fetch(url)
+    }
+
+    // add a rating to the playlist
+    addRatingToPlaylist(rating:string, playlistid:string){
+        const url = this.host + "/playlist/rating"
+        const data = {
+            playlistid: playlistid,
+            rating: rating
+        }
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
+
+    // add a rating to the playlist
+    // data = {
+    //    "review": "This is a review!!!!!!!!",
+    //    "playlistid": "638d54728c28b1151df70e1a",
+    //    "userid": "638d582d24fb889e019fbd14",
+    //    "username": "Admin1",
+    //    "hidden": "0" // 1 hide, 0 public
+    //}
+    addReviewToPlaylist(data:object){
+        const url = this.host + "/playlist/review"
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
+
+    // update hidden status of a review
+    // data = {
+    //    "hidden": "1",
+    //    "playlistid": "638d54728c28b1151df70e1a",
+    //    "reviewid": "1"
+    // }
+    updateReviewHiddenStatus(data:object){
+        const url = this.host + "/playlist/review/update"
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
+
 }

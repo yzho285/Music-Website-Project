@@ -1,6 +1,9 @@
 /* Genre mongoose model */
 const mongoose = require('mongoose')
 
+const Review = require('./Review')
+
+// Reviews will be embedded in the Playlist model
 const PlaylistSchema = new mongoose.Schema({
 	listname: {
 		type: String,
@@ -41,9 +44,13 @@ const PlaylistSchema = new mongoose.Schema({
     reviews: {
         type: Array,
         required: false,
-        default: []
+        default: [Review]
     },
     rating: {
+        type: String,
+        required: false
+    },
+    numberOfRatings: {
         type: String,
         required: false
     },
