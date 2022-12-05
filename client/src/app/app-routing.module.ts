@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ExampleComponent } from './example/example.component'
 import { LoginComponent } from './login/login.component'
 import { RegisterComponent } from './register/register.component'
+import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 
 const routes: Routes = [
   // default page
@@ -24,6 +25,10 @@ const routes: Routes = [
   {
     path: 'example',
     component: ExampleComponent
+  },
+  {
+    path: 'unauthenticated-user',
+    component: UnauthenticatedUserComponent
   }
 ];
 

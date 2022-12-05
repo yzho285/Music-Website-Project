@@ -1,1 +1,23 @@
 <p>unauthenticated-user works!</p>
+<form class="searchTrack">
+    <mat-form-field class="searchTrack-input">
+      <mat-label id="searchTrack-input">Input artist name, genre and track titke</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke">
+    </mat-form-field>
+    <button mat-button (click)="searchTrack($event)">Search</button>
+  </form>
+
+  <table *ngIf="searchTrackResult?.length"  mat-table [dataSource]="searchTrackResult" class="mat-elevation-z8">
+    <!-- genre id -->
+    <ng-container matColumnDef="track_title">
+      <th mat-header-cell *matHeaderCellDef> track_title ID </th>
+      <td mat-cell *matCellDef="let element"> {{element.track_title}} </td>
+    </ng-container>
+    <!-- tracks -->
+    <ng-container matColumnDef="artist_name">
+      <th mat-header-cell *matHeaderCellDef> artist_name </th>
+      <td mat-cell *matCellDef="let element"> {{element.artist_name}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="searchTrackResult"></tr>
+    <tr mat-row *matRowDef="let row; columns: searchTrackResult;"></tr>
+  </table>
