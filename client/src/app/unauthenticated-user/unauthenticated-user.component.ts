@@ -9,6 +9,7 @@ import { HttpService } from '../commonServices/http-service'
 export class UnauthenticatedUserComponent implements OnInit {
 
   searchTrackResult:any = []
+  displayedColumns:string[] = ['track_title', 'artist_name']
 
   constructor(
     private httpService:HttpService
@@ -18,10 +19,10 @@ export class UnauthenticatedUserComponent implements OnInit {
   }
 
   searchTrack(inputvalue:any) {
-    const searchInput = inputvalue;
-    this.httpService.queryTracksService(searchInput)
+    this.httpService.queryTracksService(inputvalue)
       .then(res => {
         if (res.status === 200) {
+          console.log(res);
           return res.json();
         } else {
           alert("Could not get tracks");
@@ -29,8 +30,8 @@ export class UnauthenticatedUserComponent implements OnInit {
         }
       })
       .then(json => {
+        console.log(json)
         this.searchTrackResult = json.tracks
-        console.log("a")
       })
       .catch(error => {
         console.log(error);
