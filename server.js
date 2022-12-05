@@ -127,6 +127,20 @@ app.get("/genres", (req, res) => {
     );
 });
 
+// Get first 10 playlist
+app.get("/public/playlists", (req, res) => {
+    Playlist.find({'visible':{$in: '1'}}).sort({lastModifiedTime: -1}).limit(10).then(
+        playlists => {
+            log('Playlists number: ' + playlists.length)
+            res.send({ playlists });
+        },
+        error => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
+
+
 // search tracks by one keyword (artist genre title)
 // /public/tracks?keyword=xxx
 app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req, res) => {
@@ -153,7 +167,7 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
 });
 
 // return all playlists detail info created by a user using their userid
-// /playlist？userid=xxx
+// /playlists？userid=xxx
 app.get('/playlists', (req, res) => {
     User.findById(req.query.userid.toString())
         .then(user => {
@@ -348,6 +362,111 @@ app.post('/playlist/update', (req, res) => {
             res.status(400).send(); // bad request for changing the student.
         });
 
+})
+
+// add a rating to the playlist
+app.post('/playlist/rating', (req, res) => {
+    const rating = req.body.rating.toString()
+    const playlistid = req.body.playlistid.toString()
+    
+    Playlist.findOne({ _id: playlistid })
+        .then(playlist => {
+            if (!playlist) {
+                res.status(404).send('Playlist does not exist');
+            } else {
+                if (playlist?.rating) {
+                    log('update rating')
+                    playlist.numberOfRatings = (parseInt(playlist.numberOfRatings) + 1).toString()
+                    const avg = (parseInt(playlist.rating) + parseInt(rating)) / parseInt(playlist.numberOfRatings)
+                    playlist.rating = avg.toFixed(1)
+                } else {
+                    log('no rating')
+                    playlist.numberOfRatings = '1'
+                    playlist.rating = parseInt(rating)
+                }
+                playlist.save().then(
+                    result => {
+                        log('Update rating success')
+                        res.send(playlist);
+                    }),
+                    error => {
+                        res.status(400).send(error); // 400 for bad request
+                    }
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
+
+})
+
+// add a review to the playlist
+app.post('/playlist/review', (req, res) => {
+    const playlistid = req.body.playlistid.toString()
+
+    const review = {
+        content: req.body.review.toString(),
+        creationTime: new Date(),
+        creatorUsername: req.body.username.toString(),
+        creatorId: req.body.userid.toString(),
+        hidden: '0' // 1 hidden, 2 public
+    }
+    
+    Playlist.findOne({ _id: playlistid })
+        .then(playlist => {
+            if (!playlist) {
+                res.status(404).send('Playlist does not exist');
+            } else {
+                review.id = parseInt(playlist.reviews.length) + 1
+                playlist.reviews.push(review)
+                playlist.save().then(
+                    result => {
+                        log('Update review success')
+                        res.send(playlist);
+                    }),
+                    error => {
+                        res.status(400).send(error); // 400 for bad request
+                    }
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
+
+})
+
+// update a review's hidden status
+// 1 hide, 0 public
+app.post('/playlist/review/update', (req, res) => {
+    const hidden = req.body.hidden.toString()
+    const reviewid = req.body.reviewid.toString()
+    const playlistid = req.body.playlistid.toString()
+
+    Playlist.findOne({ _id: playlistid })
+        .then(playlist => {
+            if (!playlist) {
+                res.status(404).send('Playlist does not exist');
+            } else {
+                playlist.lastModifiedTime = new Date()
+                playlist.reviews[parseInt(reviewid)-1].hidden = hidden
+                playlist.markModified('reviews');
+                playlist.save().then(
+                    result => {
+                        log('Update review hidden status success')
+                        res.send(result);
+                    }),
+                    error => {
+                        log(error)
+                        res.status(400).send(error); // 400 for bad request
+                    }
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
 })
 
 /*** Helper Functions ************************************/
