@@ -125,3 +125,5 @@ client/dist/
 client/package-lock.json
 client/node_modules/
 client/.angular/cache
+.Rhistory
+.DS_Store
