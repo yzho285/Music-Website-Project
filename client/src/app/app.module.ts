@@ -23,13 +23,15 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 // toolbar
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RegisterComponent } from './register/register.component';
+import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ExampleComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    UnauthenticatedUserComponent
   ],
   imports: [
     BrowserModule,
