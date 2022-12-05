@@ -127,6 +127,20 @@ app.get("/genres", (req, res) => {
     );
 });
 
+// Get first 10 playlist
+app.get("/public/playlists", (req, res) => {
+    Playlist.find({'visible':{$in: '1'}}).sort({lastModifiedTime: -1}).limit(10).then(
+        playlists => {
+            log('Playlists number: ' + playlists.length)
+            res.send({ playlists });
+        },
+        error => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
+
+
 // search tracks by one keyword (artist genre title)
 // /public/tracks?keyword=xxx
 app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req, res) => {
@@ -153,7 +167,7 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
 });
 
 // return all playlists detail info created by a user using their userid
-// /playlist？userid=xxx
+// /playlists？userid=xxx
 app.get('/playlists', (req, res) => {
     User.findById(req.query.userid.toString())
         .then(user => {
