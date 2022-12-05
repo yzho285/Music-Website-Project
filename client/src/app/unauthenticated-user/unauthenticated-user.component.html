@@ -1,10 +1,10 @@
 <p>unauthenticated-user works!</p>
 <form class="searchTrack">
     <mat-form-field class="searchTrack-input">
-      <mat-label id="searchTrack-input">Input artist name, genre and track titke</mat-label>
-      <input matInput placeholder="Ex. artist name, genre and track titke">
+      <mat-label>Input artist name, genre and track titke</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #searchTrackinput>
     </mat-form-field>
-    <button mat-button (click)="searchTrack($event)">Search</button>
+    <button mat-button (click)="searchTrack(searchTrackinput.value)">Search</button>
   </form>
 
   <table *ngIf="searchTrackResult?.length"  mat-table [dataSource]="searchTrackResult" class="mat-elevation-z8">

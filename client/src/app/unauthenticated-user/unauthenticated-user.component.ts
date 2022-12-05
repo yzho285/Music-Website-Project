@@ -17,8 +17,8 @@ export class UnauthenticatedUserComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  searchTrack(e:Event) {
-    const searchInput = 'awol';
+  searchTrack(inputvalue:any) {
+    const searchInput = inputvalue;
     this.httpService.queryTracksService(searchInput)
       .then(res => {
         if (res.status === 200) {
