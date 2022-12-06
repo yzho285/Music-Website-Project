@@ -91,12 +91,16 @@ app.post("/users/login", (req, res) => {
     // find the user by email
     User.findByEmailPassword(email, password)
         .then(user => {
-			req.session.user = user._id;
-            req.session.email = user.email;
-            res.send({ currentUser: user.email, id: user._id, userName: user.userName, role: user.role });
+            if (user.activate === '0') {
+                res.status(400).send('Login Failed, User has been marked as deactivate user.')
+            } else {
+                req.session.user = user._id;
+                req.session.email = user.email;
+                res.send({ currentUser: user.email, id: user._id, userName: user.userName, role: user.role });
+            }
         })
         .catch(error => {
-            res.status(400).send()
+            res.status(401).send()
         });
 });
 
@@ -111,6 +115,124 @@ app.get("/users/logout", (req, res) => {
             res.send()
         }
     });
+});
+
+// update password of a user
+app.post("/password/update", (req, res) => {
+    log(req.body)
+    const userid = req.body.userid.toString()
+    const newpassword = req.body.newpassword.toString()
+
+    // Update the user password by their id.
+    User.findById(userid)
+        .then(user => {
+            if (!user) {
+                res.status(404).send('User does not exist');
+            } else {
+                user.password = newpassword
+                user.save().then(
+                    user => {
+                        log('update password success')
+                        res.send(user);
+                    },
+                    error => {
+                        log(error)
+                        res.status(400).send(error); // 400 for bad request
+                    }
+                );
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
+});
+
+// deactivate a user
+app.post("/admin/deactivate", (req, res) => {
+    log(req.body)
+    const userid = req.body.userid.toString()
+    User.findById(userid)
+        .then(user => {
+            if (!user) {
+                res.status(404).send('User does not exist');
+            } else {
+                if (user.role !== '1') {
+                    res.status(403).send('You are not a Admin')
+                }
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
+
+    const activate = req.body.status.toString()
+    const email = req.body.email.toString()
+
+    // Update the user password by their id.
+    User.findOneAndUpdate({ email: email }, { activate: activate }, { new: true })
+        .then(user => {
+            if (!user) {
+                res.status(404).send('User does not exist');
+            } else {
+                log('User deactivate success')
+                res.send(user)
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
+});
+
+// Grant admin privilege to a user
+// role 1 admin, 2 user
+app.post("/admin/user/upgrade", (req, res) => {
+    const email = req.body.email.toString()
+    const role = req.body.role.toString()
+    const userid = req.body.userid.toString()
+    log(req.body)
+
+    User.findById(userid)
+        .then(user => {
+            if (!user) {
+                res.status(404).send('User does not exist');
+            } else {
+                if (user.role !== '1') {
+                    res.status(403).send('You are not a Admin')
+                }
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
+
+    // Update the user password by their id.
+    User.findOne({email: email})
+        .then(user => {
+            if (!user) {
+                res.status(404).send('User does not exist');
+            } else {
+                user.role = role
+                user.userName = user.userName + '(Admin)'
+                user.save().then(
+                    result => {
+                        log('User upgrades to admin success')
+                        res.send(user)
+                    },
+                    error => {
+                        log('User upgrades to admin failed')
+                        res.status(400).send(error); // 400 for bad request
+                    }
+                );
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(400).send(); // bad request for changing the student.
+        });
 });
 
 /*** API Routes below ************************************/
@@ -266,6 +388,24 @@ app.post('/playlist', (req, res) => {
 app.delete("/playlist", (req, res) => {
     const id = req.query.listid.toString()
     const userid = req.query.userid.toString()
+    User.findById(userid)
+        .then(user => {
+            let flag = false
+            user.playlists.forEach(listid => {
+                if (listid.toString() === id) {
+                    flag = true
+                }
+            })
+            if (!flag) {
+                 // user doesn't own the playlist
+                res.status(403).send('User does not own the playlist')
+                return
+            }
+        })
+        .catch(error => {
+            res.status(400).send(); // bad request for changing the student.
+        });
+
     Playlist.findByIdAndRemove(id)
         .then(playlist => {
             if (!playlist) {
@@ -347,6 +487,27 @@ app.post('/playlist/tracks/update', (req, res) => {
 // update visible, description of a playlist
 app.post('/playlist/update', (req, res) => {
     const playlistId = req.body.playlistid.toString()
+    const userid = req.body.playlistid.toString()
+    // check if the user own the playlist
+    User.findById(userid)
+        .then(user => {
+            let flag = false
+            user.playlists.forEach(listid => {
+                if (listid.toString() === id) {
+                    flag = true
+                }
+            })
+            if (!flag) {
+                 // user doesn't own the playlist
+                res.status(403).send('User does not own the playlist')
+                return
+            }
+        })
+        .catch(error => {
+            res.status(400).send(); // bad request for changing the student.
+        });
+
+
     const { visible, description } = req.body;
     const changes = { visible, description, lastModifiedTime: new Date() };
     
@@ -368,6 +529,25 @@ app.post('/playlist/update', (req, res) => {
 app.post('/playlist/rating', (req, res) => {
     const rating = req.body.rating.toString()
     const playlistid = req.body.playlistid.toString()
+    const userid = req.body.playlistid.toString()
+    // check if the user own the playlist
+    User.findById(userid)
+        .then(user => {
+            let flag = false
+            user.playlists.forEach(listid => {
+                if (listid.toString() === id) {
+                    flag = true
+                }
+            })
+            if (!flag) {
+                 // user doesn't own the playlist
+                res.status(403).send('User does not own the playlist')
+                return
+            }
+        })
+        .catch(error => {
+            res.status(400).send(); // bad request for changing the student.
+        });
     
     Playlist.findOne({ _id: playlistid })
         .then(playlist => {

@@ -27,6 +27,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RegisterComponent } from './register/register.component';
 import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 import { UserInfoComponent } from './user-info/user-info.component';
+import { AdminManageComponent } from './admin-manage/admin-manage.component';
 
 
 @NgModule({
@@ -35,8 +36,9 @@ import { UserInfoComponent } from './user-info/user-info.component';
     ExampleComponent,
     LoginComponent,
     RegisterComponent,
-    UnauthenticatedUserComponent,
-    UserInfoComponent
+    UserInfoComponent,
+    AdminManageComponent,
+    UnauthenticatedUserComponent
   ],
   imports: [
     BrowserModule,

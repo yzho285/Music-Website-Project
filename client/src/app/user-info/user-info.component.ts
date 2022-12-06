@@ -2,13 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../commonServices/http-service'
 const log = console.log
 
-/** Error when invalid control is dirty, touched, or submitted. */
-// export class MyErrorStateMatcher implements ErrorStateMatcher {
-//   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-//     const isSubmitted = form && form.submitted;
-//     return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-//   }
-// }
 @Component({
   selector: 'app-user-info',
   templateUrl: './user-info.component.html',
@@ -16,10 +9,13 @@ const log = console.log
 })
 
 export class UserInfoComponent implements OnInit {
-  password = '';
-  constructor(private httpService:HttpService, ) { }
+  password = ''
+  username = ''
+  constructor(private httpService:HttpService) { }
 
   ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    this.username = user.userName
   }
 
 

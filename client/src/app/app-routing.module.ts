@@ -5,6 +5,7 @@ import { LoginComponent } from './login/login.component'
 import { RegisterComponent } from './register/register.component'
 import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 import { UserInfoComponent } from './user-info/user-info.component'
+import { AdminManageComponent } from './admin-manage/admin-manage.component'
 
 
 const routes: Routes = [
@@ -27,6 +28,10 @@ const routes: Routes = [
   {
     path: 'example',
     component: ExampleComponent
+  },
+  {
+    path: 'adminManage',
+    component: AdminManageComponent
   },
   {
     path: 'userInfo',

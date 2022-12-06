@@ -1,0 +1,69 @@
+<p>admin-manage works!</p>
+<mat-form-field class="example-form-field">
+    <mat-label>Enter a user's email</mat-label>
+    <input matInput type="text" [(ngModel)]="email">
+    <button *ngIf="email" matSuffix mat-icon-button aria-label="Clear" (click)="email=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    class="update-admin-btn" 
+    [disabled]="!email"
+    (click)="grantPrivilege(email)"
+  >
+   Grant Admin Privilege
+  </button>
+
+  <mat-form-field class="example-form-field">
+    <mat-label>Enter a user's email</mat-label>
+    <input matInput type="text" [(ngModel)]="deactivateEmail">
+    <button *ngIf="deactivateEmail" matSuffix mat-icon-button aria-label="Clear" (click)="deactivateEmail=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    class="update-password-btn" 
+    [disabled]="!deactivateEmail"
+    (click)="deactivateOrActivateUser(deactivateEmail, '0')"
+  >
+    Deactivate
+  </button>
+
+  
+  <mat-form-field class="example-form-field">
+    <mat-label>Enter a user's email</mat-label>
+    <input matInput type="text" [(ngModel)]="activateEmail">
+    <button *ngIf="activateEmail" matSuffix mat-icon-button aria-label="Clear" (click)="activateEmail=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    class="update-password-btn" 
+    [disabled]="!activateEmail"
+    (click)="deactivateOrActivateUser(activateEmail, '1')"
+  >
+    Activate
+  </button>
+
+  <mat-form-field class="example-form-field">
+    <mat-label>Update Your Password Here</mat-label>
+    <input matInput type="text" [(ngModel)]="password">
+    <button *ngIf="password" matSuffix mat-icon-button aria-label="Clear" (click)="password=''">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    class="update-password-btn" 
+    [disabled]="!password"
+    (click)="updatePassword(password)"
+  >
+    Update
+  </button>

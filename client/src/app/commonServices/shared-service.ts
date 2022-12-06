@@ -4,6 +4,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 })
 export class SharedService {
   onLoginEvent:EventEmitter<any> = new EventEmitter();
+  onRoleEvent:EventEmitter<any> = new EventEmitter();
 
   constructor() {}
 
