@@ -7,6 +7,8 @@
 <hr>
 
 <button mat-raised-button color="primary" (click)="getAllGenres()">Get All Genres</button>
+<button mat-raised-button color="primary" (click)="searchTrack($event)">searchTrack</button>
+
 <table *ngIf="genres?.length"  mat-table [dataSource]="genres" class="mat-elevation-z8">
     <!-- genre id -->
     <ng-container matColumnDef="genre_id">

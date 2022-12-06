@@ -35,9 +35,15 @@ export class LoginComponent implements OnInit {
       .then(res => {
         if (res.status === 200) {
             return res.json();
-        } else {
-            alert("User doesn't exist");
+        } else if (res.status === 401) {
+            alert("Login Failed, Email and password don't match!");
             return
+        } else if (res.status === 400) {
+          alert("Login Failed, User has been marked as deactivate user. Please contact site administrator.");
+          return
+        } else {
+          alert("Login Failed");
+          return
         }
       })
       .then(json => {

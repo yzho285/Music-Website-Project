@@ -15,6 +15,7 @@ export class ExampleComponent implements OnInit {
   students:any = []
   genres:any = []
   displayedColumns:string[] = ['genre_id', 'tracks', 'parent', 'title', 'top_level']
+  searchTrackResult:any = []
 
   constructor(
     private httpService:HttpService, 
@@ -41,5 +42,28 @@ export class ExampleComponent implements OnInit {
         .catch(error => {
             console.log(error);
         })
+  }
+
+  searchTrack(e:Event) {
+    const searchInput = 'awol';
+    console.log("test");
+    this.httpService.queryTracksService(searchInput)
+      .then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          return res.json();
+        } else {
+          alert("Could not get tracks");
+          return
+        }
+      })
+      .then(json => {
+        console.log("a")
+        console.log(json);
+        this.searchTrackResult = json.tracks
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 }
