@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpService } from '../commonServices/http-service';
 
 @Component({
   selector: 'app-auth-user',
@@ -7,9 +8,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AuthUserComponent implements OnInit {
 
-  constructor() { }
+  name: string = 'z'
+  box: string = 'div-dom'
+
+
+  constructor(
+    private httpService:HttpService
+
+    ) { }
 
   ngOnInit(): void {
   }
 
+  createNewPlaylist(nameValue:any){
+    this.httpService.createNewPlaylist(nameValue)
+    .then(res =>{
+
+    })
+
+
+
+  }
 }

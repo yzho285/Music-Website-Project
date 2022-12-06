@@ -6,6 +6,7 @@ import { RegisterComponent } from './register/register.component'
 import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 import { UserInfoComponent } from './user-info/user-info.component'
 import { AdminManageComponent } from './admin-manage/admin-manage.component'
+import { AuthUserComponent } from './auth-user/auth-user.component';
 
 
 const routes: Routes = [
@@ -40,6 +41,10 @@ const routes: Routes = [
   {
     path: 'unauthenticated-user',
     component: UnauthenticatedUserComponent
+  },
+  {
+    path: 'auth-user',
+    component: AuthUserComponent
   }
 ];
 
