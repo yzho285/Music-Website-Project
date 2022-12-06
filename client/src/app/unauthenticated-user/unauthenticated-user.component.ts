@@ -10,6 +10,8 @@ export class UnauthenticatedUserComponent implements OnInit {
 
   searchTrackResult:any = []
   displayedColumns:string[] = ['track_title', 'artist_name']
+  trackdetailindex:boolean = false
+  YoutubeLink:string = ''
 
   constructor(
     private httpService:HttpService
@@ -37,5 +39,18 @@ export class UnauthenticatedUserComponent implements OnInit {
         console.log(error);
       })
   }
+
+  searchTrackDetail(element:any) {
+    console.log(element.track_title);
+  }
+
+  goToYoutube(element:any){
+    this.YoutubeLink = "https://www.youtube.com/results?" + new URLSearchParams({
+      search_query: element.track_title
+  })
+    console.log(this.YoutubeLink)
+    window.location.href=this.YoutubeLink
+  }
+
 
 }
