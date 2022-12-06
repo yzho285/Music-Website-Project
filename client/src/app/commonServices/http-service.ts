@@ -42,6 +42,14 @@ export class HttpService {
         });
         return fetch(request)
     }
+    // register
+    emailConfirmService(userid:string) {
+        const url = this.host + "/confirmation/" + userid
+        // new URLSearchParams({
+        //     userid: userid
+        // })
+        return fetch(url)
+    }
     // Update password
     passwrodUpdateService(userid:string, newpassword:string) {
         const data = {

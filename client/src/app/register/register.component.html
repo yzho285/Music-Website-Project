@@ -28,10 +28,19 @@
             mat-raised-button 
             color="primary" 
             class="login-btn" 
-            [disabled]="!registerForm.value.email || !registerForm.value.password || !registerForm.value.userName"
+            [disabled]="(!registerForm.value.email || !registerForm.value.password || !registerForm.value.userName) || verify"
             (click)="submitRegisterForm()"
         >
             Register
+        </button>
+        <button 
+            *ngIf="verify"
+            mat-raised-button 
+            color="primary" 
+            class="email-btn" 
+            (click)="verifyEmail()"
+        >
+          Verify Your Email Here
         </button>
     </form>
 </div>

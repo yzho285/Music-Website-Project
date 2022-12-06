@@ -58,12 +58,34 @@ app.post("/users/signup", (req, res) => {
     // Save the user
     user.save().then(
         user => {
+            // const link = 'http:\/\/' + req.headers.host + '\/confirmation\/' + user.email
             res.send(user)
         },
         error => {
             res.status(400).send(error)
         }
     );
+});
+
+
+app.get("/confirmation/:userid", (req, res) => {
+    log('userid: ' + req.params.userid)
+    User.findByIdAndUpdate(req.params.userid.toString(), {verify: '1'}, {new: true})
+        .then(user => {
+            if (!user) {
+                res.status(404).send('User does not exist')
+            } else {
+                res.status(200).send({ 
+                    currentUser: user.email, 
+                    id: user._id, 
+                    userName: user.userName, 
+                    role: user.role
+                })
+            }
+        })
+        .catch(error => {
+            res.status(401).send()
+        });
 });
 
 // express-session for managing user sessions
@@ -96,7 +118,23 @@ app.post("/users/login", (req, res) => {
             } else {
                 req.session.user = user._id;
                 req.session.email = user.email;
-                res.send({ currentUser: user.email, id: user._id, userName: user.userName, role: user.role });
+                if (user.verify === '1') {
+                    res.status(200).send({ 
+                        currentUser: user.email, 
+                        id: user._id, 
+                        userName: user.userName, 
+                        role: user.role, 
+                        verify: user.verify 
+                    });
+                } else {
+                    res.status(200).send({ 
+                        currentUser: user.email, 
+                        id: user._id, 
+                        userName: user.userName, 
+                        role: user.role, 
+                        verify: user.verify 
+                    });
+                }
             }
         })
         .catch(error => {
