@@ -3,8 +3,10 @@ import { RouterModule, Routes } from '@angular/router';
 import { ExampleComponent } from './example/example.component'
 import { LoginComponent } from './login/login.component'
 import { RegisterComponent } from './register/register.component'
+import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 import { UserInfoComponent } from './user-info/user-info.component'
 import { AdminManageComponent } from './admin-manage/admin-manage.component'
+
 
 const routes: Routes = [
   // default page
@@ -34,6 +36,10 @@ const routes: Routes = [
   {
     path: 'userInfo',
     component: UserInfoComponent
+  },
+  {
+    path: 'unauthenticated-user',
+    component: UnauthenticatedUserComponent
   }
 ];
 

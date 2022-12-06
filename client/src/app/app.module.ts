@@ -25,8 +25,10 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 // toolbar
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RegisterComponent } from './register/register.component';
+import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { AdminManageComponent } from './admin-manage/admin-manage.component';
+
 
 @NgModule({
   declarations: [
@@ -35,7 +37,8 @@ import { AdminManageComponent } from './admin-manage/admin-manage.component';
     LoginComponent,
     RegisterComponent,
     UserInfoComponent,
-    AdminManageComponent
+    AdminManageComponent,
+    UnauthenticatedUserComponent
   ],
   imports: [
     BrowserModule,
