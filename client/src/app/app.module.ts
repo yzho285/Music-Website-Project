@@ -28,6 +28,7 @@ import { RegisterComponent } from './register/register.component';
 import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
 import { UserInfoComponent } from './user-info/user-info.component';
 import { AdminManageComponent } from './admin-manage/admin-manage.component';
+import { AuthUserComponent } from './auth-user/auth-user.component';
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { AdminManageComponent } from './admin-manage/admin-manage.component';
     RegisterComponent,
     UserInfoComponent,
     AdminManageComponent,
-    UnauthenticatedUserComponent
+    UnauthenticatedUserComponent,
+    AuthUserComponent
   ],
   imports: [
     BrowserModule,
