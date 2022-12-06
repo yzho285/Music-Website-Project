@@ -42,6 +42,23 @@ export class HttpService {
         });
         return fetch(request)
     }
+    // Update password
+    passwrodUpdateService(userid:string, newpassword:string) {
+        const data = {
+            userid: userid,
+            newpassword: newpassword
+        }
+        const url = this.host + "/password/update"
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
     // search tracks by using artist name, genre and track titke
     queryTracksService(keyword:string) {
         const url = this.host + "/public/tracks?" + new URLSearchParams({
@@ -84,8 +101,9 @@ export class HttpService {
     // update visibility and description of a playlist
     // ex:
     // data = {
-    //    visible: '1'
-    //    description: ''
+    //    visible: '1',
+    //    description: '',
+    //    userid: ''
     // }
     updateVisibleOrDescription(data:object) {
         const url = this.host + "/playlist/update"
@@ -102,12 +120,13 @@ export class HttpService {
 
     // add or delete a track in a playlist
     // flag: '1' add, '0' delete
-    addOrDeleteATrack(trackid:string, playlistid:string, flag:string){
+    addOrDeleteATrack(trackid:string, playlistid:string, flag:string, userid:string){
         const url = this.host + "/playlist/tracks/update"
         const data = {
             trackid: trackid,
             playlistid: playlistid,
-            updateOrDelete: flag
+            updateOrDelete: flag,
+            userid: userid
         }
         const request = new Request(url, {
             method: "post",

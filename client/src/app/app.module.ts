@@ -7,6 +7,7 @@ import { ExampleComponent } from './example/example.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpService } from './commonServices/http-service'
 import { LoginComponent } from './login/login.component';
+import { FormsModule } from '@angular/forms';
 
 // Angular material
 // button
@@ -19,11 +20,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 // form
 import {MatFormFieldModule} from '@angular/material/form-field';
+
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 // toolbar
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { RegisterComponent } from './register/register.component';
 import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthenticated-user.component';
+import { UserInfoComponent } from './user-info/user-info.component';
+
 
 @NgModule({
   declarations: [
@@ -31,7 +35,8 @@ import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthentic
     ExampleComponent,
     LoginComponent,
     RegisterComponent,
-    UnauthenticatedUserComponent
+    UnauthenticatedUserComponent,
+    UserInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -41,8 +46,7 @@ import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthentic
     MatTableModule,
     MatInputModule,
     MatIconModule,
-    // FormControl,
-    // FormGroup,
+    FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     RouterModule,
