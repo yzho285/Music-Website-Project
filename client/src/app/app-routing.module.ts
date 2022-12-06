@@ -4,6 +4,7 @@ import { ExampleComponent } from './example/example.component'
 import { LoginComponent } from './login/login.component'
 import { RegisterComponent } from './register/register.component'
 import { UserInfoComponent } from './user-info/user-info.component'
+import { AdminManageComponent } from './admin-manage/admin-manage.component'
 
 const routes: Routes = [
   // default page
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'example',
     component: ExampleComponent
+  },
+  {
+    path: 'adminManage',
+    component: AdminManageComponent
   },
   {
     path: 'userInfo',

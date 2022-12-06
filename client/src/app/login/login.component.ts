@@ -25,10 +25,7 @@ export class LoginComponent implements OnInit {
     private router:Router
   ) { }
 
-  ngOnInit(): void {
-    // window.sessionStorage["currentUser"] = ''
-    log(this.routerInfo.snapshot.queryParams)
-  }
+  ngOnInit(): void {}
 
   submitLoginForm() {
     this.httpService.loginService(this.loginForm.value)
@@ -48,8 +45,10 @@ export class LoginComponent implements OnInit {
       })
       .then(json => {
         // save current login user to localstorage
+        log(json)
         localStorage.setItem('currentUser', JSON.stringify(json));
         this.sharedService.onLoginEvent.emit(json.userName);
+        this.sharedService.onRoleEvent.emit(json.role);
         this.router.navigate(['/', 'example']);
       })
       .catch(e => {

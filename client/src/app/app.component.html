@@ -17,21 +17,17 @@
   >
     {{ loginStatus }}
   </a>
-  <a *ngIf="loginStatus !== 'Login'" class="login-btn" [routerLink]="['/userInfo']">
+  <a *ngIf="loginStatus !== 'Login' && role !== '1'" class="login-btn" [routerLink]="['/userInfo']">
+    {{ loginStatus }}
+  </a>
+
+  <a *ngIf="loginStatus !== 'Login' && role === '1'" class="login-btn" [routerLink]="['/adminManage']">
     {{ loginStatus }}
   </a>
   
   <a *ngIf="loginStatus !== 'Login'" (click)="logOut()" [routerLink]="['/']">
     Logout
   </a>
-  <!-- <a *ngIf="loginStatus !== 'Login'" class="logout-btn">
-    Logout
-  </a> -->
-  <!-- <a class="login-btn" [routerLink]="['/login']" routerLinkActive="router-link-active">{{ loginStatus }}</a> -->
-  <!-- <a class="login-btn" [routerLink]="['/login']" routerLinkActive="router-link-active">{{ loginStatus }}</a> -->
-  <!-- <button mat-button class="login-btn" [routerLink]="['/login']" routerLinkActive="router-link-active">
-    Login
-  </button> -->
 </mat-toolbar>
 <router-outlet></router-outlet>
 

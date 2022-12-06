@@ -59,6 +59,42 @@ export class HttpService {
         });
         return fetch(request)
     }
+    // Update normal user to admin 
+    adminPrivilege(email:string, role:string, userid:string) {
+        const data = {
+            email: email,
+            role: role,
+            userid: userid
+        }
+        const url = this.host + "/admin/user/upgrade"
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
+    // deactivate a user
+    deactivateService(email:string, status:string, userid:string) {
+        const data = {
+            email: email,
+            status: status,
+            userid: userid
+        }
+        const url = this.host + "/admin/deactivate"
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
     // search tracks by using artist name, genre and track titke
     queryTracksService(keyword:string) {
         const url = this.host + "/public/tracks?" + new URLSearchParams({
