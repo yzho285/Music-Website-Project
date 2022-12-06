@@ -66,8 +66,9 @@ export class UnauthenticatedUserComponent implements OnInit {
     this.YoutubeLink = "https://www.youtube.com/results?" + new URLSearchParams({
       search_query: element.track_title
   })
-    console.log(this.YoutubeLink)
-    window.location.href=this.YoutubeLink
+    console.log(this.YoutubeLink);
+    // window.location.href=this.YoutubeLink
+    window.open(this.YoutubeLink,'_blank');
   }
 
 
