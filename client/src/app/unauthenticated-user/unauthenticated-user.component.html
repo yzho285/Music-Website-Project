@@ -7,20 +7,49 @@
     <button type='button' mat-button (click)="searchTrack(searchTrackinput.value)">Search</button>
   </form>
 
-  <table *ngIf="searchTrackResult?.length"  mat-table [dataSource]="searchTrackResult" class="mat-elevation-z8">
-    <!-- track_title -->
-    <ng-container matColumnDef="track_title">
-      <th mat-header-cell *matHeaderCellDef> track_title </th>
-      <td mat-cell *matCellDef="let element"> {{element.track_title}} </td>
-    </ng-container>
-    <!-- artist_name -->
-    <ng-container matColumnDef="artist_name">
-      <th mat-header-cell *matHeaderCellDef> artist_name </th>
-      <td mat-cell *matCellDef="let element"> {{element.artist_name}} 
-        <button type='button' mat-button (click)="searchTrackDetail(element)">details</button>
-        <a mat-button href="YoutubeLink" target="_blank" (click)="goToYoutube(element)">Play on YouTube</a>
-      </td>
-    </ng-container>
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+
+  <table *ngIf="searchTrackResult?.length" mat-table
+       [dataSource]="searchTrackResult" multiTemplateDataRows
+       class="mat-elevation-z8">
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+    <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+  </ng-container>
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <div class="example-element-Youtube-Link"> 
+        <a mat-button href="YoutubeLink" target="_blank" (click)="goToYoutube(element)">Play on YouTube</a> 
+      </div>
+      <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+        <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+        <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <div class="example-element-diagram">
+          <div class="example-element-track_title"> {{element.track_title}} </div>
+          <div class="example-element-artist_name"> {{element.artist_name}} </div>
+        </div>
+        <div class="example-element-track_duration">
+          track_duration:{{element.track_duration}};track_favorites:{{element.track_favorites}}
+          <span class="example-element-description-attribution"></span>
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>
