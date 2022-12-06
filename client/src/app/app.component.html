@@ -17,11 +17,11 @@
   >
     {{ loginStatus }}
   </a>
-  <a *ngIf="loginStatus !== 'Login'" class="login-btn">
+  <a *ngIf="loginStatus !== 'Login'" class="login-btn" [routerLink]="['/userInfo']">
     {{ loginStatus }}
   </a>
   
-  <a *ngIf="loginStatus !== 'Login'" (click)="logOut()">
+  <a *ngIf="loginStatus !== 'Login'" (click)="logOut()" [routerLink]="['/']">
     Logout
   </a>
   <!-- <a *ngIf="loginStatus !== 'Login'" class="logout-btn">

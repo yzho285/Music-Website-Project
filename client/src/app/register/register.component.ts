@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../commonServices/http-service'
 import { SharedService } from '../commonServices/shared-service'
 
-import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
+
 const log = console.log
 
 @Component({
@@ -12,11 +13,30 @@ const log = console.log
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  // emailFormControl = new FormControl('', [Validators.required, Validators.email]);
 
   registerForm:FormGroup = new FormGroup({
-    email: new FormControl(''),
-    password: new FormControl(''),
-    userName: new FormControl('')
+    email: new FormControl(
+      '', 
+      {
+        validators: [Validators.required, Validators.email],
+        updateOn: 'blur'
+      }
+    ),
+    password: new FormControl(
+      '', 
+      {
+        validators: [Validators.required],
+        updateOn: 'blur'
+      }
+    ),
+    userName: new FormControl(
+      '', 
+      {
+        validators: [Validators.required],
+        updateOn: 'blur'
+      }
+    ),
   })
 
   constructor(
@@ -46,8 +66,8 @@ export class RegisterComponent implements OnInit {
         if (json != undefined) {
           console.log(json)
           // save current login user
-          window.sessionStorage["currentUser"] = JSON.stringify(json)
-          this.sharedService.onLoginEvent.emit(json?.userName);
+          localStorage.setItem('currentUser', JSON.stringify(json));
+          this.sharedService.onLoginEvent.emit(json.userName);
           this.router.navigate(['/', 'example']);
         }
       })
