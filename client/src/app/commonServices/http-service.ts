@@ -309,7 +309,7 @@ export class HttpService {
     // get a list of messages
     // type: notice/request/dispute
     getMessage(type:string) {
-        const url = this.host + "/admin/message" + new URLSearchParams({
+        const url = this.host + "/admin/message?" + new URLSearchParams({
             type: type
         })
         return fetch(url)
@@ -319,7 +319,7 @@ export class HttpService {
     // get a policy
     // type: security/DMCA/AUP
     getPolicy(type:string) {
-        const url = this.host + "/admin/policy" + new URLSearchParams({
+        const url = this.host + "/admin/policy?" + new URLSearchParams({
             type: type
         })
         return fetch(url)
