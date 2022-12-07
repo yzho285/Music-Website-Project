@@ -16,12 +16,18 @@ import {animate, state, style, transition, trigger} from '@angular/animations';
 })
 export class UnauthenticatedUserComponent implements OnInit {
 
-  searchTrackResult:any = []
   YoutubeLink:string = ''
+  searchTrackResult:any = []
   displayedColumns:string[] = ['track_title', 'artist_name']
   columnsToDisplay:string[] = ['track_title', 'artist_name']
-  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand'];
+  columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand']
   expandedElement!: PeriodicElement | null;
+  PublicPlayList:any=[]
+  displayedColumnsPublicPlaylists:string[] = ['listname', 'creator', 'totalPlaytime', 'track_number']
+  columnsToDisplayPublicPlaylists:string[] =['listname', 'creator', 'totalPlaytime', 'track_number']
+  columnsToDisplayWithExpandPublicPlaylists = [...this.columnsToDisplayPublicPlaylists, 'expand']
+  expandedElementPublicPlaylists!: PeriodicElementPublicPlaylists | null;
+
 
   constructor(
     private httpService:HttpService,
@@ -58,16 +64,56 @@ export class UnauthenticatedUserComponent implements OnInit {
       })
   }
 
-  searchTrackDetail(element:any) {
-    console.log(element.track_title);
-  }
+  // searchTrackDetail(element:any) {
+  //   console.log(element.track_title);
+  // }
 
   goToYoutube(element:any){
     this.YoutubeLink = "https://www.youtube.com/results?" + new URLSearchParams({
       search_query: element.track_title
   })
-    console.log(this.YoutubeLink)
-    window.location.href=this.YoutubeLink
+    console.log(this.YoutubeLink);
+    // window.location.href=this.YoutubeLink
+    window.open(this.YoutubeLink,'_blank');
+  }
+
+  goToYoutubeplaylist(element:any){
+    this.YoutubeLink = "https://www.youtube.com/results?" + new URLSearchParams({
+      search_query: element
+  })
+    // window.location.href=this.YoutubeLink
+    console.log(element);
+    window.open(this.YoutubeLink,'_blank');
+  }
+
+  getPublicPlaylist() {
+    this.PublicPlayList=[]
+    this.httpService.get10Playlist()
+      .then(res => {
+        if (res.status === 200) {
+          console.log(res);
+          return res.json();
+        } else {
+          alert("Could not get public playlists");
+          return
+        }
+      })
+      .then(json => {
+        for(let i=0;i<json.playlists.length;i++){
+          const temp = {"listname":json.playlists[i]["listname"],
+                        "creator":json.playlists[i]["username"],
+                        "totalPlaytime":json.playlists[i]["totalPlaytime"],
+                        "track_number":json.playlists[i]["tracks"].length,
+                        "tracks":json.playlists[i]["tracks"]};
+          const temptrack = {"tracks":json.playlists[i]["tracks"]};
+          // console.log(temp);
+          this.PublicPlayList.push(temp);
+        }
+        console.log(this.PublicPlayList);
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
 
@@ -78,4 +124,12 @@ export interface PeriodicElement {
   artist_name: string;
   track_duration: string;
   track_favorites: string;
+}
+
+export interface PeriodicElementPublicPlaylists {
+  listname: string;
+  creator: string;
+  totalPlaytime: string;
+  track_number: string;
+  tracks:string;
 }
