@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../commonServices/http-service'
+import { SharedService } from '../commonServices/shared-service'
+import * as moment from 'moment';
+
 const log = console.log
 
 @Component({
@@ -14,11 +17,18 @@ export class AdminManageComponent implements OnInit {
   password = ''
   deactivateEmail = ''
   activateEmail = ''
-  constructor(private httpService:HttpService) { }
+  messages:any[] = []
+  messageType = ''
+  displayedColumns:string[] = []
+
+  constructor(private httpService:HttpService, private sharedService:SharedService, ) {
+  }
 
   ngOnInit(): void {
     const user = JSON.parse(localStorage.getItem('currentUser') || '{}')
     this.userid = user.id
+    this.sharedService.onLoginEvent.emit(user.userName);
+    this.sharedService.onRoleEvent.emit(user.role);
   }
 
   grantPrivilege(email:string) {
@@ -87,6 +97,32 @@ export class AdminManageComponent implements OnInit {
             console.log(error);
         })
     }
+  }
+
+  getAllMessages(type:string) {
+    this.messageType = type
+    this.httpService.getMessage(type)
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                alert("Could not get messages");
+                return
+            }
+        })
+        .then(json => {
+            this.displayedColumns = ['type', 'contact', 'creationDate', 'content']
+            this.messages = json.message
+            log(this.messages)
+            // this.genres = json.genres
+        })
+        .catch(error => {
+            console.log(error);
+        })
+  }
+
+  formatDate(time:Date){
+    return moment(time).format('YYYY/MM/DD, HH:mm:ss')
   }
 
 }

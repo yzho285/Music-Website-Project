@@ -9,3 +9,21 @@
 .update-password-btn {
     margin-left: 10px;
 }
+
+.btns-wrapper {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.msg-btn {
+    margin-left: 10px;
+}
+
+.mat-mdc-table {
+    width: 100%;
+    max-height: 500px;
+    overflow: auto;
+}
+  
+.mat-column-name {
+  height: 100px;
+}
