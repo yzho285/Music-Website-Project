@@ -265,5 +265,64 @@ export class HttpService {
         });
         return fetch(request)
     }
+    /*** Policy/Notice ************************************/
+    // Update a policy
+    // type: security/DMCA/AUP
+    updatePolicyService(content:string, type:string){
+        const data = {
+            content: content,
+            type: type,
+            updateOrCreate: 'update'
+        }
+        const url = this.host + "/admin/policy"
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
+    
+    // send a message to admin
+    // type: notice/request/dispute
+    sendMessageService(content:string, type:string, contact:string){
+        const data = {
+            content: content,
+            type: type,
+            contact: contact
+        }
+        const url = this.host + "/admin/message"
+        const request = new Request(url, {
+            method: "post",
+            body: JSON.stringify(data),
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
+
+    // get a list of messages
+    // type: notice/request/dispute
+    getMessage(type:string) {
+        const url = this.host + "/admin/message" + new URLSearchParams({
+            type: type
+        })
+        return fetch(url)
+    }
+
+    
+    // get a policy
+    // type: security/DMCA/AUP
+    getPolicy(type:string) {
+        const url = this.host + "/admin/policy" + new URLSearchParams({
+            type: type
+        })
+        return fetch(url)
+    }
 
 }
