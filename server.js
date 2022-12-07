@@ -21,6 +21,8 @@ const { Genre } = require('./models/genre')
 const { User } = require("./models/user");
 const { Track } = require("./models/track");
 const { Playlist } = require("./models/playlist");
+const { Message } = require("./models/message");
+const { Policy } = require("./models/policy");
 
 
 const { check, validationResult } = require('express-validator')
@@ -686,6 +688,113 @@ app.post('/playlist/review/update', (req, res) => {
             res.status(400).send(); // bad request for changing the student.
         });
 })
+
+// create a notice/request/dispute to site admin
+app.post("/admin/message", (req, res) => {
+    const content = req.body.content.toString()
+    const contact = req.body.contact.toString()
+    const type = req.body.type.toString()
+    log(req.body)
+
+    // Create a new user
+    const message = new Message({
+        content: content,
+        contact: contact,
+        type: type,
+		creationDate: new Date(),
+    });
+
+    // Save the user
+    message.save().then(
+        message => {
+            log('Create ' + type + 'success')
+            res.send(message)
+        },
+        error => {
+            log(error)
+            res.status(400).send(error)
+        }
+    );
+});
+
+// get a list of request/notice/dispute
+app.get("/admin/message", (req, res) => {
+    log('type: ' + req.query.type.toString())
+    const type = req.query.type.toString()
+    Message.find({ 'type': { $in: type } }).sort({ creationDate: -1 })
+        .then(message => {
+            if (!message) {
+                res.status(404).send('User does not exist')
+            } else {
+                res.status(200).send({ message })
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(401).send()
+        });
+});
+
+// create/modify a security/DMCA/AUP policy
+app.post("/admin/policy", (req, res) => {
+    const content = req.body.content.toString()
+    const type = req.body.type.toString()
+    const updateOrCreate = req.body.updateOrCreate.toString()
+    log(req.body)
+    if (updateOrCreate === 'create') {
+        // Create a new user
+        const policy = new Policy({
+            content: content,
+            type: type,
+            creationDate: new Date(),
+        });
+
+        // Save the user
+        policy.save().then(
+            message => {
+                log('Create ' + type + ' success')
+                res.send(message)
+            },
+            error => {
+                log(error)
+                res.status(400).send(error)
+            }
+        );
+    } else if (updateOrCreate === 'update'){
+        Policy.findOneAndUpdate({ type: type }, { content: content, creationDate: new Date() }, { new: true})
+            .then(policy => {
+                if (!policy) {
+                    res.status(404).send('Policy does not exist');
+                } else {
+                    log('Policy update success')
+                    res.send(policy)
+                }
+            })
+            .catch(error => {
+                log(error)
+                res.status(400).send(); // bad request for changing the student.
+            });
+    }
+});
+
+
+// get a security/DMCA/AUP policy
+app.get("/admin/policy", (req, res) => {
+    log('type: ' + req.query.type.toString())
+    const type = req.query.type.toString()
+    Policy.find({ 'type': { $in: type } })
+        .then(policy => {
+            if (!policy) {
+                res.status(404).send('Policy does not exist')
+            } else {
+                res.status(200).send({ policy })
+            }
+        })
+        .catch(error => {
+            log(error)
+            res.status(401).send()
+        });
+});
 
 /*** Helper Functions ************************************/
 
