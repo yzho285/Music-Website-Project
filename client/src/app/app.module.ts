@@ -29,6 +29,7 @@ import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthentic
 import { UserInfoComponent } from './user-info/user-info.component';
 import { AdminManageComponent } from './admin-manage/admin-manage.component';
 import { AuthUserComponent } from './auth-user/auth-user.component';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
@@ -54,7 +55,8 @@ import { AuthUserComponent } from './auth-user/auth-user.component';
     ReactiveFormsModule,
     MatFormFieldModule,
     RouterModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatDividerModule
   ],
   providers: [HttpService],
   bootstrap: [AppComponent]

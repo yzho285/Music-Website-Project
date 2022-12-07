@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../commonServices/http-service'
+import { SharedService } from '../commonServices/shared-service'
 const log = console.log
 
 @Component({
@@ -11,11 +12,13 @@ const log = console.log
 export class UserInfoComponent implements OnInit {
   password = ''
   username = ''
-  constructor(private httpService:HttpService) { }
+  constructor(private httpService:HttpService, private sharedService:SharedService,) { }
 
   ngOnInit(): void {
     const user = JSON.parse(localStorage.getItem('currentUser') || '{}')
     this.username = user.userName
+    this.sharedService.onLoginEvent.emit(user.userName);
+    this.sharedService.onRoleEvent.emit(user.role);
   }
 
 

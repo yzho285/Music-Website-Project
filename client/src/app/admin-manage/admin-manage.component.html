@@ -1,69 +1,104 @@
-<p>admin-manage works!</p>
+<h2>Admin Management Page</h2>
 <mat-form-field class="example-form-field">
     <mat-label>Enter a user's email</mat-label>
     <input matInput type="text" [(ngModel)]="email">
     <button *ngIf="email" matSuffix mat-icon-button aria-label="Clear" (click)="email=''">
       <mat-icon>close</mat-icon>
     </button>
-  </mat-form-field>
-  <button 
+</mat-form-field>
+<button 
     mat-raised-button 
     color="primary" 
     class="update-admin-btn" 
     [disabled]="!email"
     (click)="grantPrivilege(email)"
-  >
-   Grant Admin Privilege
-  </button>
+>
+  Grant Admin Privilege
+</button>
 
-  <mat-form-field class="example-form-field">
-    <mat-label>Enter a user's email</mat-label>
-    <input matInput type="text" [(ngModel)]="deactivateEmail">
-    <button *ngIf="deactivateEmail" matSuffix mat-icon-button aria-label="Clear" (click)="deactivateEmail=''">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-form-field>
-  <button 
+<mat-form-field class="example-form-field">
+  <mat-label>Enter a user's email</mat-label>
+  <input matInput type="text" [(ngModel)]="deactivateEmail">
+  <button *ngIf="deactivateEmail" matSuffix mat-icon-button aria-label="Clear" (click)="deactivateEmail=''">
+    <mat-icon>close</mat-icon>
+  </button>
+</mat-form-field>
+
+<button 
     mat-raised-button 
     color="primary" 
     class="update-password-btn" 
     [disabled]="!deactivateEmail"
     (click)="deactivateOrActivateUser(deactivateEmail, '0')"
-  >
-    Deactivate
-  </button>
+>
+  Deactivate
+</button>
 
   
-  <mat-form-field class="example-form-field">
+<mat-form-field class="example-form-field">
     <mat-label>Enter a user's email</mat-label>
     <input matInput type="text" [(ngModel)]="activateEmail">
     <button *ngIf="activateEmail" matSuffix mat-icon-button aria-label="Clear" (click)="activateEmail=''">
       <mat-icon>close</mat-icon>
     </button>
-  </mat-form-field>
-  <button 
+</mat-form-field>
+<button 
     mat-raised-button 
     color="primary" 
     class="update-password-btn" 
     [disabled]="!activateEmail"
     (click)="deactivateOrActivateUser(activateEmail, '1')"
-  >
-    Activate
-  </button>
+>
+  Activate
+</button>
 
-  <mat-form-field class="example-form-field">
+<mat-form-field class="example-form-field">
     <mat-label>Update Your Password Here</mat-label>
     <input matInput type="text" [(ngModel)]="password">
     <button *ngIf="password" matSuffix mat-icon-button aria-label="Clear" (click)="password=''">
       <mat-icon>close</mat-icon>
     </button>
-  </mat-form-field>
-  <button 
+</mat-form-field>
+<button 
     mat-raised-button 
     color="primary" 
     class="update-password-btn" 
     [disabled]="!password"
     (click)="updatePassword(password)"
-  >
-    Update
-  </button>
+>
+  Update
+</button>
+<mat-divider></mat-divider>
+<h2>DMCA notice & takedown Tool</h2>
+<div class="btns-wrapper">
+  <button class="msg-btn" mat-raised-button color="primary" (click)="getAllMessages('request')">Get Requests</button>
+  <button class="msg-btn" mat-raised-button color="primary" (click)="getAllMessages('notice')">Get Notices</button>
+  <button class="msg-btn" mat-raised-button color="primary" (click)="getAllMessages('dispute')">Get Disputes</button>
+</div>
+
+
+<mat-table [dataSource]="messages">
+  <!-- Header and Row Declarations -->
+  <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <!-- Type -->
+  <ng-container matColumnDef="type">
+    <mat-header-cell *matHeaderCellDef> Type </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ row.type }} </mat-cell>
+  </ng-container>
+  <!-- Contact -->
+  <ng-container matColumnDef="contact">
+    <mat-header-cell *matHeaderCellDef> Contact </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ row.contact }} </mat-cell>
+  </ng-container>
+  <!-- Creation Date -->
+  <ng-container matColumnDef="creationDate">
+    <mat-header-cell *matHeaderCellDef> Creation Date </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ formatDate(row.creationDate) }} </mat-cell>
+  </ng-container>
+  <!-- Content -->
+  <ng-container matColumnDef="content">
+    <mat-header-cell *matHeaderCellDef> Content </mat-header-cell>
+    <mat-cell *matCellDef="let row"> {{ row.content }} </mat-cell>
+  </ng-container>
+</mat-table>
