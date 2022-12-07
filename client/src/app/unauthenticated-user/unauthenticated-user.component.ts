@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { HttpService } from '../commonServices/http-service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { MatSelectModule} from '@angular/material/select';
 
 @Component({
   selector: 'app-unauthenticated-user',
@@ -27,6 +28,14 @@ export class UnauthenticatedUserComponent implements OnInit {
   columnsToDisplayPublicPlaylists:string[] =['listname', 'creator', 'totalPlaytime', 'track_number']
   columnsToDisplayWithExpandPublicPlaylists = [...this.columnsToDisplayPublicPlaylists, 'expand']
   expandedElementPublicPlaylists!: PeriodicElementPublicPlaylists | null;
+  selectedType:string = ''
+  requesttypes: requestTypes[] = [
+    {requestTypes: 'notice'},
+    {requestTypes: 'request'},
+    {requestTypes: 'dispute'},
+  ];
+
+  
 
 
   constructor(
@@ -116,6 +125,15 @@ export class UnauthenticatedUserComponent implements OnInit {
       })
   }
 
+  requestCopyrightFunc(request:any, email:any){
+    // console.log(request);
+    // console.log(email);
+    // console.log(this.selectedType);
+    this.httpService.sendMessageService(request,this.selectedType,email);
+  }
+
+
+
 
 }
 
@@ -132,4 +150,8 @@ export interface PeriodicElementPublicPlaylists {
   totalPlaytime: string;
   track_number: string;
   tracks:string;
+}
+
+export interface requestTypes {
+  requestTypes: string;
 }

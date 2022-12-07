@@ -137,3 +137,24 @@
   </tr>
   <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 </table>
+
+<form class="requestCopyright">
+    <mat-form-field class="requestCopyright-input">
+      <mat-label>Input artist name, genre and track titke</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #requestCopyright>
+    </mat-form-field>
+    <mat-form-field class="requestCopyright-input">
+      <mat-label>Input artist name, genre and track titke</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #requestCopyrightEmail>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Request type</mat-label>
+        <select matNativeControl [(ngModel)]="selectedType" name="type">
+          <option *ngFor="let requesttype of requesttypes" [value]="requesttype.requestTypes">
+            {{requesttype.requestTypes}}
+          </option>
+        </select>
+      </mat-form-field>
+    <a mat-button target="_blank" (click)="requestCopyrightFunc(requestCopyright.value,requestCopyrightEmail.value)">Submit</a>
+    <!-- <button type='button' mat-button (click)="requestCopyright()">Search</button> -->
+</form>
