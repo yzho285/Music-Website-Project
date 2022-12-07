@@ -14,7 +14,8 @@ const log = console.log
 })
 export class RegisterComponent implements OnInit {
   // emailFormControl = new FormControl('', [Validators.required, Validators.email]);
-
+  verify = false
+  userid = ''
   registerForm:FormGroup = new FormGroup({
     email: new FormControl(
       '', 
@@ -65,14 +66,34 @@ export class RegisterComponent implements OnInit {
       .then(json => {
         if (json != undefined) {
           console.log(json)
-          // save current login user
-          localStorage.setItem('currentUser', JSON.stringify(json));
-          this.sharedService.onLoginEvent.emit(json.userName);
-          this.router.navigate(['/', 'example']);
+          this.verify = true // need verify
+          this.userid = json._id
+          this.registerForm.disable()
         }
       })
       .catch(e => {
         console.log(e)
+      })
+  }
+
+  verifyEmail() {
+    this.httpService.emailConfirmService(this.userid)
+      .then(res => {
+        if (res.status === 200) {
+            alert('Your email address has been verified successfully')
+            return res.json()
+        } else {
+            // alert("User Already exist");
+            alert('Failed to verify the email')
+            return
+        }
+      })
+      .then(json => { // successfully verify email
+        // save current login user
+        localStorage.setItem('currentUser', JSON.stringify(json));
+        this.sharedService.onLoginEvent.emit(json.userName);
+        this.router.navigate(['/', 'example']);
+
       })
   }
 

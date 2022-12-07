@@ -51,6 +51,11 @@ const UserSchema = new mongoose.Schema({
         type: Array,
         required: false,
         default: []
+    },
+    verify: { // 1 has verified, 0 hasn't
+        type: String,
+        required: true,
+        default: '0'
     }
 })
 

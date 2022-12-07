@@ -17,6 +17,8 @@ export class LoginComponent implements OnInit {
     email: new FormControl(''),
     password: new FormControl('')
   })
+  verify = true
+  userid = ''
 
   constructor(
     private httpService:HttpService, 
@@ -45,6 +47,12 @@ export class LoginComponent implements OnInit {
       })
       .then(json => {
         // save current login user to localstorage
+        if (json.verify === '0') {
+          this.userid = json.id
+          this.verify = false
+          alert('Your email address has not been verified yet, please click the button to complete verification')
+          return
+        }
         log(json)
         localStorage.setItem('currentUser', JSON.stringify(json));
         this.sharedService.onLoginEvent.emit(json.userName);
@@ -55,5 +63,24 @@ export class LoginComponent implements OnInit {
         console.log(e)
       })
   }
-
+  verifyEmail() {
+    this.httpService.emailConfirmService(this.userid)
+      .then(res => {
+        if (res.status === 200) {
+            return res.json()
+        } else {
+            // alert("User Already exist");
+            alert('Failed to verify the email')
+            return
+        }
+      })
+      .then(json => {
+        alert('Email has verfied successfully')
+        log(json)
+        localStorage.setItem('currentUser', JSON.stringify(json))
+        this.sharedService.onLoginEvent.emit(json.userName)
+        this.sharedService.onRoleEvent.emit(json.role)
+        this.router.navigate(['/', 'example'])
+      })
+  }
 }
