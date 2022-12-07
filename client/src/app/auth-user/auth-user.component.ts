@@ -4,12 +4,18 @@ import { HttpService } from '../commonServices/http-service';
 @Component({
   selector: 'app-auth-user',
   templateUrl: './auth-user.component.html',
-  styleUrls: ['./auth-user.component.css']
+  styleUrls: ['./auth-user.component.css'],
+  
 })
+
 export class AuthUserComponent implements OnInit {
 
-  name: string = 'z'
-  box: string = 'div-dom'
+
+  data!: listdata
+  listname!: listdata["listname"]
+  tracks!: listdata['tracks']
+  description?: listdata['description']
+
 
 
   constructor(
@@ -20,13 +26,27 @@ export class AuthUserComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  createNewPlaylist(nameValue:any){
-    this.httpService.createNewPlaylist(nameValue)
-    .then(res =>{
+  createNewPlaylist(data:object){
+    this.httpService.createNewPlaylist(data)
+    .then(json => {
+  })
+}
+}
+    // data = {
+    //    "listname": "test3",
+    //    "username": "admin",
+    //    "tracks": ["10", "134"],
+    //    "description": "test!!!!!!!!!",
+    //    "userid": "638c162f173a1714fb5d6a77",
+    //     "description": optional,
+    //     "visible": optional
+    //}
+export interface listdata {
+  listname: string;
+  username: string
+  tracks: string[]
+  description:string
+  userid: string
+  visible: string
 
-    })
-
-
-
-  }
 }
