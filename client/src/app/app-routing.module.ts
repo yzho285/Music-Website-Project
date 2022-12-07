@@ -39,7 +39,7 @@ const routes: Routes = [
     component: UserInfoComponent
   },
   {
-    path: 'unauthenticated-user',
+    path: 'homepage',
     component: UnauthenticatedUserComponent
   },
   {
