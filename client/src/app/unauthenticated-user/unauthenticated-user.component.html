@@ -137,3 +137,41 @@
   </tr>
   <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 </table>
+
+<form class="requestCopyright">
+    <mat-form-field class="requestCopyright-input">
+      <mat-label>Input content</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #requestCopyright>
+    </mat-form-field>
+    <mat-form-field class="requestCopyright-input">
+      <mat-label>Input email address</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #requestCopyrightEmail>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Request type</mat-label>
+        <select matNativeControl [(ngModel)]="selectedType" name="type">
+          <option *ngFor="let requesttype of requesttypes" [value]="requesttype.requestTypes">
+            {{requesttype.requestTypes}}
+          </option>
+        </select>
+      </mat-form-field>
+    <a mat-button target="_blank" (click)="requestCopyrightFunc(requestCopyright.value,requestCopyrightEmail.value)">Submit</a>
+</form>
+
+<button type='button' mat-button (click)="getallPolicy()">Click to See Policis</button>
+<table *ngIf="policy?.length"  mat-table [dataSource]="policy" class="mat-elevation-z8">
+    <ng-container matColumnDef="security">
+      <th mat-header-cell *matHeaderCellDef> security policy </th>
+      <td mat-cell *matCellDef="let element"> {{element.security}} </td>
+    </ng-container>
+    <ng-container matColumnDef="DMCA">
+      <th mat-header-cell *matHeaderCellDef> DMCA policy </th>
+      <td mat-cell *matCellDef="let element"> {{element.DMCA}} </td>
+    </ng-container>
+    <ng-container matColumnDef="AUP">
+      <th mat-header-cell *matHeaderCellDef> AUP policy </th>
+      <td mat-cell *matCellDef="let element"> {{element.AUP}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsPolicy"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsPolicy"></tr>
+  </table>

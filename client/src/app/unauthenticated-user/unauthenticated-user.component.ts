@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Type } from '@angular/core';
 import { HttpService } from '../commonServices/http-service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+
 
 @Component({
   selector: 'app-unauthenticated-user',
@@ -27,6 +28,17 @@ export class UnauthenticatedUserComponent implements OnInit {
   columnsToDisplayPublicPlaylists:string[] =['listname', 'creator', 'totalPlaytime', 'track_number']
   columnsToDisplayWithExpandPublicPlaylists = [...this.columnsToDisplayPublicPlaylists, 'expand']
   expandedElementPublicPlaylists!: PeriodicElementPublicPlaylists | null;
+  selectedType:string = ''
+  requesttypes: requestTypes[] = [
+    {requestTypes: 'notice'},
+    {requestTypes: 'request'},
+    {requestTypes: 'dispute'},
+  ];
+  policy:any[] = []
+  policytemp:any={security:"", DMCA:"", AUP:""}
+  displayedColumnsPolicy:string[] = ['security', 'DMCA', 'AUP']
+
+  
 
 
   constructor(
@@ -116,6 +128,76 @@ export class UnauthenticatedUserComponent implements OnInit {
       })
   }
 
+  requestCopyrightFunc(request:any, email:any){
+    // console.log(request);
+    // console.log(email);
+    // console.log(this.selectedType);
+    if(email.includes('@')){
+      this.httpService.sendMessageService(request,this.selectedType,email);
+      alert('Request succeeded')
+    }
+    else{
+      alert('Email address invalid')
+    }
+    
+    
+  }
+
+  getallPolicy(){
+    this.httpService.getPolicy("security")
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                alert("Could not get security policy");
+                return
+            }
+        })
+        .then(json => {
+            this.policytemp.security = json.policy[0].content;
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    this.httpService.getPolicy("DMCA")
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                alert("Could not get DMCA policy");
+                return
+            }
+        })
+        .then(json => {
+            this.policytemp.DMCA = json.policy[0].content
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    this.httpService.getPolicy("AUP")
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                alert("Could not get AUP policy");
+                return
+            }
+        })
+        .then(json => {
+            this.policytemp.AUP = json.policy[0].content;
+            this.policy.push(this.policytemp)
+
+            console.log(this.policytemp)
+            console.log(this.policy)
+        })
+        .catch(error => {
+            console.log(error);
+        })
+
+  }
+
+
+
 
 }
 
@@ -133,3 +215,9 @@ export interface PeriodicElementPublicPlaylists {
   track_number: string;
   tracks:string;
 }
+
+export interface requestTypes {
+  requestTypes: string;
+}
+
+
