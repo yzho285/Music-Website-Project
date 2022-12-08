@@ -24,7 +24,8 @@ const { Playlist } = require("./models/playlist");
 const { Message } = require("./models/message");
 const { Policy } = require("./models/policy");
 
-
+// string similarity
+const stringSimilarity = require("string-similarity");
 
 const { check, validationResult } = require('express-validator')
 
@@ -85,10 +86,6 @@ app.post("/users/signup", (req, res) => {
     user.save().then(
         user => {
             user = {
-                // userName: user.userName,
-                // role: user.role,
-                // activate: user.activate,
-                // email: user.email,
                 id: user._id
             }
             res.setHeader("Access-Control-Expose-Headers", "Authorization")
@@ -343,20 +340,40 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
 	}
 
     const keyword = req.query.keyword.toString()
-    log(keyword)
-    Track.find({$or:[
-        {"artist_name" : {$regex : keyword, $options: "ix"}},
-        {"track_genres" : {$regex : keyword, $options: "ix"}},
-        {"track_title" : {$regex : keyword, $options: "ix"}}
-    ]}).then(
-        tracks => {
-            res.send({ tracks });
-        },
-        error => {
-            log(error)
-            res.status(500).send(error); // server error
-        }
-    );
+    log('keyword: ' + keyword)
+    let bestMatch = ''
+    let target = []
+    Track.distinct("artist_name")
+        .then(track => {
+            target = target.concat(track)
+            Track.distinct("track_genres")
+            .then(track => {
+                target = target.concat(track)
+                Track.distinct("track_title")
+                    .then(track => {
+                        target = target.concat(track)
+                        const upper = target.map(element => {
+                            return element.toUpperCase();
+                          });
+                        const bestMatch = stringSimilarity.findBestMatch(keyword.toUpperCase(), upper)
+                        log('bestMatch')
+                        log(bestMatch.bestMatch)
+                        Track.find({$or:[
+                            {"artist_name" : {$regex : bestMatch.bestMatch.target, $options: "ix"}},
+                            {"track_genres" : {$regex : bestMatch.bestMatch.target, $options: "ix"}},
+                            {"track_title" : {$regex : bestMatch.bestMatch.target, $options: "ix"}}
+                        ]}).then(
+                            tracks => {
+                                res.send({ tracks });
+                            },
+                            error => {
+                                log(error)
+                                res.status(500).send(error); // server error
+                            }
+                        );
+                    })
+            })
+        })
 });
 
 // return all playlists detail info created by a user using their userid

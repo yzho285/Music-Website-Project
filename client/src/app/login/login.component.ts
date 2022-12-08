@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
             alert("Login Failed, Email and password don't match!");
             return
         } else if (res.status === 400) {
-          alert("Login Failed, User has been marked as deactivate user. Please contact site administrator.");
+          alert("Login Failed, User has been marked as deactivate user. Please contact site administrator (admin@gmail.com).");
           return
         } else {
           alert("Login Failed");
