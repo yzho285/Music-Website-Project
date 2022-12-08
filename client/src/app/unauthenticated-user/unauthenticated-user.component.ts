@@ -132,7 +132,15 @@ export class UnauthenticatedUserComponent implements OnInit {
     // console.log(request);
     // console.log(email);
     // console.log(this.selectedType);
-    this.httpService.sendMessageService(request,this.selectedType,email);
+    if(email.includes('@')){
+      this.httpService.sendMessageService(request,this.selectedType,email);
+      alert('Request succeeded')
+    }
+    else{
+      alert('Email address invalid')
+    }
+    
+    
   }
 
   getallPolicy(){
