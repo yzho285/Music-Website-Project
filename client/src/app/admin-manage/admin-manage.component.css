@@ -27,3 +27,30 @@
 .mat-column-name {
   height: 100px;
 }
+
+.policy-form {
+    height: 50%;
+    width: 80%;
+}
+  
+.policy-form-field {
+    width: 100%;
+    height: 300px;
+}
+
+.policy-input {
+    width: 100%;
+    height: 300px;
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+    border-top: 1px solid black;
+}
+
+.policy-update-btn {
+    margin-top: 20px;
+}
+
+.types-select {
+    margin-top: 20px;
+    margin-right: 10px;
+}

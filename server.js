@@ -49,6 +49,8 @@ app.use(expressJWT({ secret: secretKey, algorithms: ['HS256'] }).unless({
         '/public/playlists',
         '/public/tracks',
         '/confirmation',
+        '/admin/policy',
+        '/admin/message',
         /^\/confirmation\/.*/
     ]
 }))

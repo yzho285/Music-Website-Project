@@ -69,6 +69,36 @@
   Update
 </button>
 <mat-divider></mat-divider>
+
+<form class="policy-form">
+  <mat-form-field class="policy-form-field">
+    <mat-label>Update Policy Here</mat-label>
+    <textarea class="policy-input" matInput [(ngModel)]="newPolicy" name="textArea"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="types-select">
+    <mat-label>Toppings</mat-label>
+    <mat-select [formControl]="selectType">
+      <mat-option *ngFor="let type of types" [value]="type.value">{{ type.label }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button 
+      mat-raised-button 
+      type="button"
+      color="primary" 
+      class="policy-update-btn" 
+      [disabled]="!selectType.value"
+      (click)="updatePolicy()"
+  >
+    Update Policy
+  </button>
+</form>
+
+
+
+
+<mat-divider></mat-divider>
 <h2>DMCA notice & takedown Tool</h2>
 <div class="btns-wrapper">
   <button class="msg-btn" mat-raised-button color="primary" (click)="getAllMessages('request')">Get Requests</button>
@@ -102,3 +132,4 @@
     <mat-cell *matCellDef="let row"> {{ row.content }} </mat-cell>
   </ng-container>
 </mat-table>
+<mat-divider></mat-divider>

@@ -30,6 +30,7 @@ import { UserInfoComponent } from './user-info/user-info.component';
 import { AdminManageComponent } from './admin-manage/admin-manage.component';
 import { AuthUserComponent } from './auth-user/auth-user.component';
 import { MatDividerModule } from '@angular/material/divider';
+import {MatSelectModule} from '@angular/material/select';
 
 
 @NgModule({
@@ -56,7 +57,8 @@ import { MatDividerModule } from '@angular/material/divider';
     MatFormFieldModule,
     RouterModule,
     MatToolbarModule,
-    MatDividerModule
+    MatDividerModule,
+    MatSelectModule
   ],
   providers: [HttpService],
   bootstrap: [AppComponent]
