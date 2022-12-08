@@ -26,7 +26,7 @@ export class AppComponent {
   ngOnInit(): void {}
 
   logOut() {
-    localStorage["currentUser"] = null
+    localStorage.clear();
     this.sharedService.onLoginEvent.emit('Login')
     this.httpService.logoutService()
       .then(res => {

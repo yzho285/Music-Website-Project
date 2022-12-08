@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../commonServices/http-service'
 import { SharedService } from '../commonServices/shared-service'
+import { FormControl, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
 
 const log = console.log
@@ -20,6 +21,13 @@ export class AdminManageComponent implements OnInit {
   messages:any[] = []
   messageType = ''
   displayedColumns:string[] = []
+  types:any[] = [
+    {value: 'security', label: 'Security'},
+    {value: 'DMCA', label: 'DMCA'},
+    {value: 'AUP', label: 'AUP'},
+  ]
+  newPolicy:string = '';
+  selectType = new FormControl('')
 
   constructor(private httpService:HttpService, private sharedService:SharedService, ) {
   }
@@ -90,6 +98,26 @@ export class AdminManageComponent implements OnInit {
               return
           } else {
               alert("Update Failed")
+              return
+          }
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
+  }
+
+  updatePolicy(){
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    log(this.newPolicy)
+    if (user) {
+      this.httpService.updatePolicyService(this.newPolicy, this.selectType.value || '')
+        .then(res => {
+          if (res.status === 200) {
+              alert("Update Policy Success")
+              return
+          } else {
+              alert("Update Policy Failed")
               return
           }
         })
