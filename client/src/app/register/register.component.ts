@@ -67,8 +67,9 @@ export class RegisterComponent implements OnInit {
         if (json != undefined) {
           console.log(json)
           this.verify = true // need verify
-          this.userid = json._id
+          this.userid = json.user.id
           this.registerForm.disable()
+          // localStorage.setItem('token', json.token);
         }
       })
       .catch(e => {
@@ -90,7 +91,9 @@ export class RegisterComponent implements OnInit {
       })
       .then(json => { // successfully verify email
         // save current login user
-        localStorage.setItem('currentUser', JSON.stringify(json));
+        log(json)
+        localStorage.setItem('currentUser', JSON.stringify(json.user));
+        localStorage.setItem('token', json.token);
         this.sharedService.onLoginEvent.emit(json.userName);
         this.router.navigate(['/', 'example']);
 
