@@ -25,11 +25,33 @@ const { Message } = require("./models/message");
 const { Policy } = require("./models/policy");
 
 
+
 const { check, validationResult } = require('express-validator')
 
 // body-parser: middleware for parsing HTTP JSON body into a usable object
 const bodyParser = require('body-parser') 
 app.use(bodyParser.json())
+
+// jwt
+const jsonwebtoken = require('jsonwebtoken')
+const expressJWT = require('express-jwt')
+// const { expressjwt: jwt } = require("express-jwt");
+// var { expressjwt: jwt } = require("express-jwt");
+
+const secretKey = 'IloveECE9065!!!'
+// decode jwt token
+app.use(expressJWT({ secret: secretKey, algorithms: ['HS256'] }).unless({
+    path: [
+        '/users/signup',
+        '/users/login',
+        '/users/logout',
+        '/genres', 
+        '/public/playlists',
+        '/public/tracks',
+        '/confirmation',
+        /^\/confirmation\/.*/
+    ]
+}))
 
 /*** Webpage routes below **********************************/
 // route for root
@@ -56,12 +78,19 @@ app.post("/users/signup", (req, res) => {
 		playlists: [],
 		reviews: []
     });
-
+    
     // Save the user
     user.save().then(
         user => {
-            // const link = 'http:\/\/' + req.headers.host + '\/confirmation\/' + user.email
-            res.send(user)
+            user = {
+                // userName: user.userName,
+                // role: user.role,
+                // activate: user.activate,
+                // email: user.email,
+                id: user._id
+            }
+            res.setHeader("Access-Control-Expose-Headers", "Authorization")
+            res.send({ user })
         },
         error => {
             res.status(400).send(error)
@@ -70,22 +99,28 @@ app.post("/users/signup", (req, res) => {
 });
 
 
-app.get("/confirmation/:userid", (req, res) => {
-    log('userid: ' + req.params.userid)
-    User.findByIdAndUpdate(req.params.userid.toString(), {verify: '1'}, {new: true})
+app.get("/confirmation", (req, res) => {
+    log('userid: ' + req.query.userid)
+    User.findByIdAndUpdate(req.query.userid.toString(), {verify: '1'}, {new: true})
         .then(user => {
             if (!user) {
+                log('404')
                 res.status(404).send('User does not exist')
             } else {
-                res.status(200).send({ 
+                const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
+                    expiresIn: "1h",
+                 });
+                 user = {
                     currentUser: user.email, 
                     id: user._id, 
                     userName: user.userName, 
                     role: user.role
-                })
+                }
+                res.status(200).send({ user, token })
             }
         })
         .catch(error => {
+            log(error)
             res.status(401).send()
         });
 });
@@ -120,23 +155,17 @@ app.post("/users/login", (req, res) => {
             } else {
                 req.session.user = user._id;
                 req.session.email = user.email;
-                if (user.verify === '1') {
-                    res.status(200).send({ 
-                        currentUser: user.email, 
-                        id: user._id, 
-                        userName: user.userName, 
-                        role: user.role, 
-                        verify: user.verify 
-                    });
-                } else {
-                    res.status(200).send({ 
-                        currentUser: user.email, 
-                        id: user._id, 
-                        userName: user.userName, 
-                        role: user.role, 
-                        verify: user.verify 
-                    });
-                }
+                const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
+                    expiresIn: "1h",
+                 });
+                 user = {
+                    currentUser: user.email, 
+                    id: user._id, 
+                    userName: user.userName, 
+                    role: user.role, 
+                    verify: user.verify,
+                 }
+                 res.status(200).send({ user, token});
             }
         })
         .catch(error => {
@@ -159,7 +188,7 @@ app.get("/users/logout", (req, res) => {
 
 // update password of a user
 app.post("/password/update", (req, res) => {
-    log(req.body)
+    log('new: ' + req.body.newpassword)
     const userid = req.body.userid.toString()
     const newpassword = req.body.newpassword.toString()
 

@@ -5,6 +5,7 @@ import { Injectable } from "@angular/core";
 })
 export class HttpService {
     constructor() {}
+
     host:string = 'http://localhost:5000'
     //get all genres
     getAllGenresService() {
@@ -42,13 +43,21 @@ export class HttpService {
         });
         return fetch(request)
     }
-    // register
+    // Email Confirm
     emailConfirmService(userid:string) {
-        const url = this.host + "/confirmation/" + userid
-        // new URLSearchParams({
-        //     userid: userid
-        // })
-        return fetch(url)
+        const url = this.host + "/confirmation?" + new URLSearchParams({
+            userid: userid
+        })
+
+        const request = new Request(url, {
+            method: "get",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+                // Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        return fetch(request)
     }
     // Update password
     passwrodUpdateService(userid:string, newpassword:string) {
@@ -62,7 +71,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -80,7 +90,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -98,7 +109,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -116,7 +128,15 @@ export class HttpService {
         const url = this.host + "/playlists?" + new URLSearchParams({
             userid: userid
         })
-        return fetch(url)
+        const request = new Request(url, {
+            method: "get",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        return fetch(request)
     }
     // create a new playlist
     // ex: 
@@ -136,7 +156,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -156,7 +177,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -177,7 +199,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -195,7 +218,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -220,7 +244,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -241,7 +266,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -260,7 +286,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -280,7 +307,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -300,7 +328,8 @@ export class HttpService {
             body: JSON.stringify(data),
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)
@@ -312,7 +341,15 @@ export class HttpService {
         const url = this.host + "/admin/message?" + new URLSearchParams({
             type: type
         })
-        return fetch(url)
+        const request = new Request(url, {
+            method: "get",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        return fetch(request)
     }
 
     
@@ -322,7 +359,15 @@ export class HttpService {
         const url = this.host + "/admin/policy?" + new URLSearchParams({
             type: type
         })
-        return fetch(url)
+        const request = new Request(url, {
+            method: "get",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        return fetch(request)
     }
 
 }
