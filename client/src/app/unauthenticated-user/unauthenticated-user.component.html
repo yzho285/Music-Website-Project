@@ -4,7 +4,8 @@
       <mat-label>Input artist name, genre and track titke</mat-label>
       <input matInput placeholder="Ex. artist name, genre and track titke" #searchTrackinput>
     </mat-form-field>
-    <button type='button' mat-button (click)="searchTrack(searchTrackinput.value)">Search</button>
+    <button type='button' mat-button (click)="searchTrack(searchTrackinput.value)"
+       style="background-color:aqua">Search</button>
 </form>
 
 
@@ -19,7 +20,7 @@
     <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
     <td mat-cell *matCellDef="let element">
       <div class="example-element-Youtube-Link"> 
-        <a mat-button href="YoutubeLink" target="_blank" (click)="goToYoutube(element)">Play on YouTube</a> 
+        <a mat-button href="YoutubeLink" target="_blank" (click)="goToYoutube(element)" style="background-color:brown">Play on YouTube</a> 
       </div>
       <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
         <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
@@ -56,7 +57,7 @@
 
 
 
-<button type='button' mat-button (click)="getPublicPlaylist()">Get Public Playlists</button>
+<button type='button' mat-button (click)="getPublicPlaylist()" style="background-color:aqua">Get Public Playlists</button>
 <table *ngIf="PublicPlayList?.length" mat-table
        [dataSource]="PublicPlayList" multiTemplateDataRows
        class="mat-elevation-z8">
@@ -85,43 +86,43 @@
         </div>
         <div class="example-element-track_duration">
           <span *ngIf="element.tracks.length>0">{{element.tracks[0].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[0].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[0].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>1">{{element.tracks[1].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[1].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[1].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>2">{{element.tracks[2].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[2].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[2].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>3">{{element.tracks[3].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[3].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[3].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>4">{{element.tracks[4].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[4].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[4].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>5">{{element.tracks[5].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[5].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[5].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>6">{{element.tracks[6].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[6].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[6].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>7">{{element.tracks[7].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[7].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[7].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>8">{{element.tracks[8].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[8].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[8].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
           <br>
           <span *ngIf="element.tracks.length>9">{{element.tracks[9].track_title}}
-            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
 
         </div>
@@ -155,10 +156,10 @@
           </option>
         </select>
       </mat-form-field>
-    <a mat-button target="_blank" (click)="requestCopyrightFunc(requestCopyright.value,requestCopyrightEmail.value)">Submit</a>
+    <a mat-button target="_blank" (click)="requestCopyrightFunc(requestCopyright.value,requestCopyrightEmail.value)" style="background-color:aqua">Submit</a>
 </form>
 
-<button type='button' mat-button (click)="getallPolicy()">Click to See Policis</button>
+<button type='button' mat-button (click)="getallPolicy()" style="background-color:aqua">Click to See Policis</button>
 <table *ngIf="policy?.length"  mat-table [dataSource]="policy" class="mat-elevation-z8">
     <ng-container matColumnDef="security">
       <th mat-header-cell *matHeaderCellDef> security policy </th>
