@@ -1,7 +1,7 @@
 import { Component, OnInit, Type } from '@angular/core';
 import { HttpService } from '../commonServices/http-service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { MatSelectModule} from '@angular/material/select';
+
 
 @Component({
   selector: 'app-unauthenticated-user',
@@ -34,6 +34,9 @@ export class UnauthenticatedUserComponent implements OnInit {
     {requestTypes: 'request'},
     {requestTypes: 'dispute'},
   ];
+  policy:any[] = []
+  policytemp:any={security:"", DMCA:"", AUP:""}
+  displayedColumnsPolicy:string[] = ['security', 'DMCA', 'AUP']
 
   
 
@@ -132,6 +135,59 @@ export class UnauthenticatedUserComponent implements OnInit {
     this.httpService.sendMessageService(request,this.selectedType,email);
   }
 
+  getallPolicy(){
+    this.httpService.getPolicy("security")
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                alert("Could not get security policy");
+                return
+            }
+        })
+        .then(json => {
+            this.policytemp.security = json.policy[0].content;
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    this.httpService.getPolicy("DMCA")
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                alert("Could not get DMCA policy");
+                return
+            }
+        })
+        .then(json => {
+            this.policytemp.DMCA = json.policy[0].content
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    this.httpService.getPolicy("AUP")
+        .then(res => {
+            if (res.status === 200) {
+                return res.json();
+            } else {
+                alert("Could not get AUP policy");
+                return
+            }
+        })
+        .then(json => {
+            this.policytemp.AUP = json.policy[0].content;
+            this.policy.push(this.policytemp)
+
+            console.log(this.policytemp)
+            console.log(this.policy)
+        })
+        .catch(error => {
+            console.log(error);
+        })
+
+  }
+
 
 
 
@@ -155,3 +211,5 @@ export interface PeriodicElementPublicPlaylists {
 export interface requestTypes {
   requestTypes: string;
 }
+
+
