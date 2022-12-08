@@ -47,16 +47,17 @@ export class LoginComponent implements OnInit {
       })
       .then(json => {
         // save current login user to localstorage
-        if (json.verify === '0') {
-          this.userid = json.id
+        if (json.user.verify === '0') {
+          this.userid = json.user.id
           this.verify = false
           alert('Your email address has not been verified yet, please click the button to complete verification')
           return
         }
         log(json)
-        localStorage.setItem('currentUser', JSON.stringify(json));
-        this.sharedService.onLoginEvent.emit(json.userName);
-        this.sharedService.onRoleEvent.emit(json.role);
+        localStorage.setItem('currentUser', JSON.stringify(json.user));
+        localStorage.setItem('token', json.token);
+        this.sharedService.onLoginEvent.emit(json.user.userName);
+        this.sharedService.onRoleEvent.emit(json.user.role);
         this.router.navigate(['/', 'example']);
       })
       .catch(e => {
