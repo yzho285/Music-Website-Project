@@ -12,6 +12,11 @@ export class HttpService {
         const url = this.host + "/genres";
         return fetch(url)
     }
+
+    getCurrentLoginUser() {
+        const url = this.host + "/users/check-session";
+        return fetch(url)
+    }
     // login
     loginService(data:object) {
         const url = this.host + "/users/login";

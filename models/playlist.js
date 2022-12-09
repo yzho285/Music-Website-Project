@@ -48,11 +48,13 @@ const PlaylistSchema = new mongoose.Schema({
     },
     rating: {
         type: String,
-        required: false
+        required: true,
+        default: '0'
     },
     numberOfRatings: {
         type: String,
-        required: false
+        required: true,
+        default: '0'
     },
     totalPlaytime: {
         type: String,

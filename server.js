@@ -24,7 +24,8 @@ const { Playlist } = require("./models/playlist");
 const { Message } = require("./models/message");
 const { Policy } = require("./models/policy");
 
-
+// string similarity
+const stringSimilarity = require("string-similarity");
 
 const { check, validationResult } = require('express-validator')
 
@@ -37,6 +38,7 @@ const jsonwebtoken = require('jsonwebtoken')
 const expressJWT = require('express-jwt')
 // const { expressjwt: jwt } = require("express-jwt");
 // var { expressjwt: jwt } = require("express-jwt");
+
 
 const secretKey = 'IloveECE9065!!!'
 // decode jwt token
@@ -51,6 +53,10 @@ app.use(expressJWT({ secret: secretKey, algorithms: ['HS256'] }).unless({
         '/confirmation',
         '/admin/policy',
         '/admin/message',
+        '/login/google',
+        '/login/google/callback',
+        '/homepage',
+        '/users/check-session',
         /^\/confirmation\/.*/
     ]
 }))
@@ -85,10 +91,6 @@ app.post("/users/signup", (req, res) => {
     user.save().then(
         user => {
             user = {
-                // userName: user.userName,
-                // role: user.role,
-                // activate: user.activate,
-                // email: user.email,
                 id: user._id
             }
             res.setHeader("Access-Control-Expose-Headers", "Authorization")
@@ -110,7 +112,7 @@ app.get("/confirmation", (req, res) => {
                 res.status(404).send('User does not exist')
             } else {
                 const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
-                    expiresIn: "1h",
+                    expiresIn: "24h",
                  });
                  user = {
                     currentUser: user.email, 
@@ -157,8 +159,10 @@ app.post("/users/login", (req, res) => {
             } else {
                 req.session.user = user._id;
                 req.session.email = user.email;
+                req.session.role = user.role;
+                req.session.username = user.userName;
                 const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
-                    expiresIn: "1h",
+                    expiresIn: "24h",
                  });
                  user = {
                     currentUser: user.email, 
@@ -175,10 +179,30 @@ app.post("/users/login", (req, res) => {
         });
 });
 
+// check if a use is logged in
+app.get("/users/check-session", (req, res) => {
+    if (session.user !== '') {
+        const user = {
+            currentUser: session.email, 
+            id: session.user, 
+            userName: session.username, 
+            role: session.role, 
+        }
+        res.send({ user });
+    } else {
+        res.status(401).send();
+    }
+});
+
 
 // logout a user
 app.get("/users/logout", (req, res) => {
     // Remove the session
+    session.user = '';
+    session.email = '';
+    session.role = '';
+    session.username = '';
+
     req.session.destroy(error => {
         if (error) {
             res.status(500).send(error);
@@ -215,7 +239,7 @@ app.post("/password/update", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 });
 
@@ -235,7 +259,7 @@ app.post("/admin/deactivate", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     const activate = req.body.status.toString()
@@ -253,7 +277,7 @@ app.post("/admin/deactivate", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 });
 
@@ -277,7 +301,7 @@ app.post("/admin/user/upgrade", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     // Update the user password by their id.
@@ -302,7 +326,7 @@ app.post("/admin/user/upgrade", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 });
 
@@ -343,26 +367,46 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
 	}
 
     const keyword = req.query.keyword.toString()
-    log(keyword)
-    Track.find({$or:[
-        {"artist_name" : {$regex : keyword, $options: "ix"}},
-        {"track_genres" : {$regex : keyword, $options: "ix"}},
-        {"track_title" : {$regex : keyword, $options: "ix"}}
-    ]}).then(
-        tracks => {
-            res.send({ tracks });
-        },
-        error => {
-            log(error)
-            res.status(500).send(error); // server error
-        }
-    );
+    log('keyword: ' + keyword)
+    let bestMatch = ''
+    let target = []
+    Track.distinct("artist_name")
+        .then(track => {
+            target = target.concat(track)
+            Track.distinct("track_genres")
+            .then(track => {
+                target = target.concat(track)
+                Track.distinct("track_title")
+                    .then(track => {
+                        target = target.concat(track)
+                        const upper = target.map(element => {
+                            return element.toUpperCase();
+                          });
+                        const bestMatch = stringSimilarity.findBestMatch(keyword.toUpperCase(), upper)
+                        log('bestMatch')
+                        log(bestMatch.bestMatch)
+                        Track.find({$or:[
+                            {"artist_name" : {$regex : bestMatch.bestMatch.target, $options: "ix"}},
+                            {"track_genres" : {$regex : bestMatch.bestMatch.target, $options: "ix"}},
+                            {"track_title" : {$regex : bestMatch.bestMatch.target, $options: "ix"}}
+                        ]}).then(
+                            tracks => {
+                                res.send({ tracks });
+                            },
+                            error => {
+                                log(error)
+                                res.status(500).send(error); // server error
+                            }
+                        );
+                    })
+            })
+        })
 });
 
 // return all playlists detail info created by a user using their userid
 // /playlists？userid=xxx
 app.get('/playlists', (req, res) => {
-    User.findById(req.query.userid.toString())
+    User.findById(req.query.userid.toString()).sort({ lastModifiedTime: -1 })
         .then(user => {
             if (!user) {
                 res.status(404).send();
@@ -375,7 +419,7 @@ app.get('/playlists', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 })
 
@@ -399,7 +443,7 @@ app.post('/playlist', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     const newList = new Playlist({
@@ -440,7 +484,7 @@ app.post('/playlist', (req, res) => {
                             }
                         })
                         .catch(error => {
-                            res.status(400).send(); // bad request for changing the student.
+                            res.status(400).send();
                         });
                 },
                 error => {
@@ -474,7 +518,7 @@ app.delete("/playlist", (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     Playlist.findByIdAndRemove(id)
@@ -503,7 +547,7 @@ app.delete("/playlist", (req, res) => {
                     }
                 })
                 .catch(error => {
-                    res.status(400).send(); // bad request for changing the student.
+                    res.status(400).send();
                 });
             }
         })
@@ -538,6 +582,7 @@ app.post('/playlist/tracks/update', (req, res) => {
                                 })
                                 playlist.totalPlaytime = convertToDuration(convertToSeconds(playlist.totalPlaytime) - convertToSeconds(track.track_duration))
                             }
+                            playlist.lastModifiedTime = new Date()
                             playlist.save().then(
                                 result => {
                                     res.send(playlist);
@@ -550,7 +595,7 @@ app.post('/playlist/tracks/update', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send(); 
         });
 
 })
@@ -575,7 +620,7 @@ app.post('/playlist/update', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 
@@ -591,7 +636,7 @@ app.post('/playlist/update', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 })
@@ -617,7 +662,7 @@ app.post('/playlist/rating', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
     
     Playlist.findOne({ _id: playlistid })
@@ -625,7 +670,7 @@ app.post('/playlist/rating', (req, res) => {
             if (!playlist) {
                 res.status(404).send('Playlist does not exist');
             } else {
-                if (playlist?.rating) {
+                if (playlist.rating) {
                     log('update rating')
                     playlist.numberOfRatings = (parseInt(playlist.numberOfRatings) + 1).toString()
                     const avg = (parseInt(playlist.rating) + parseInt(rating)) / parseInt(playlist.numberOfRatings)
@@ -635,6 +680,7 @@ app.post('/playlist/rating', (req, res) => {
                     playlist.numberOfRatings = '1'
                     playlist.rating = parseInt(rating)
                 }
+                playlist.lastModifiedTime = new Date()
                 playlist.save().then(
                     result => {
                         log('Update rating success')
@@ -647,7 +693,7 @@ app.post('/playlist/rating', (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 })
@@ -683,7 +729,7 @@ app.post('/playlist/review', (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 })
@@ -716,7 +762,7 @@ app.post('/playlist/review/update', (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 })
 
@@ -803,10 +849,102 @@ app.post("/admin/policy", (req, res) => {
             })
             .catch(error => {
                 log(error)
-                res.status(400).send(); // bad request for changing the student.
+                res.status(400).send();
             });
     }
 });
+
+// google login
+//Import the main Passport and Express-Session library
+const passport = require('passport')
+//Import the secondary "Strategy" library
+app.use(session({
+    secret: "secret",
+    resave: false ,
+    saveUninitialized: true ,
+  }))
+// init passport on every route call.
+app.use(passport.initialize()) 
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+  
+passport.deserializeUser(function(user, done) {
+   done(null, user);
+});
+
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
+passport.use(new GoogleStrategy({
+    clientID:     '480225921509-djnrq95jfp6hm0vnvl198kmdeci87eil.apps.googleusercontent.com',
+    clientSecret: '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',
+    callbackURL: "http://localhost:5000/login/google/callback",
+    passReqToCallback   : true
+  },
+  function(request, accessToken, refreshToken, profile, done) {
+    log(profile)
+    User.findOne({ email: profile.email})
+        .then(user => {
+            if(!user){
+                const user = new User({
+                    email: profile.email.toString(),
+                    userName: profile.displayName.toString(),
+                    role: '2',
+                    activate: '1',
+                    playlists: [],
+                    reviews: []
+                });
+                // Save the user
+                user.save().then(
+                    user => {
+                        log('google register success')
+                        session.user = user._id;
+                        session.email = user.email;
+                        session.role = user.role;
+                        session.username = user.userName;
+                        const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
+                            expiresIn: "24h",
+                         });
+                        session.token = token;
+                    },
+                    error => {
+                        log('google register failed')
+                        log(error)
+                        // res.status(400).send(error)
+                    }
+                );
+            } else {
+                session.user = user._id;
+                session.email = user.email;
+                session.role = user.role;
+                session.username = user.userName;
+                const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
+                    expiresIn: "24h",
+                 });
+                session.token = token;
+                log('session')
+                log(session)
+            }
+        })
+
+    return done(null, profile)
+  }
+));
+
+
+
+app.get('/login/google',
+  passport.authenticate('google', { scope:
+      [ 'email', 'profile' ] }
+));
+
+app.get('/login/google/callback',
+    passport.authenticate( 'google', {
+        successRedirect: 'http://localhost:4200/homepage',
+        failureRedirect: 'http://localhost:4200/homepage'
+    }
+    
+));
 
 
 // get a security/DMCA/AUP policy

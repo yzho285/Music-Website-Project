@@ -38,7 +38,7 @@ export class LoginComponent implements OnInit {
             alert("Login Failed, Email and password don't match!");
             return
         } else if (res.status === 400) {
-          alert("Login Failed, User has been marked as deactivate user. Please contact site administrator.");
+          alert("Login Failed, User has been marked as deactivate user. Please contact site administrator (admin@gmail.com).");
           return
         } else {
           alert("Login Failed");
@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', json.token);
         this.sharedService.onLoginEvent.emit(json.user.userName);
         this.sharedService.onRoleEvent.emit(json.user.role);
-        this.router.navigate(['/', 'example']);
+        this.router.navigate(['/', 'homepage']);
       })
       .catch(e => {
         console.log(e)
@@ -81,7 +81,15 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('currentUser', JSON.stringify(json))
         this.sharedService.onLoginEvent.emit(json.userName)
         this.sharedService.onRoleEvent.emit(json.role)
-        this.router.navigate(['/', 'example'])
+        this.router.navigate(['/', 'homepage'])
       })
+  }
+
+  loginGoogle() {
+    fetch('http://localhost:5000/login/google')
+    .then(res => {
+      log(res)
+      log(res.json)
+    })
   }
 }

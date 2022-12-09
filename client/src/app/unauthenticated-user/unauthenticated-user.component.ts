@@ -1,6 +1,7 @@
 import { Component, OnInit, Type } from '@angular/core';
 import { HttpService } from '../commonServices/http-service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
+import { SharedService } from '../commonServices/shared-service'
 
 
 @Component({
@@ -43,9 +44,32 @@ export class UnauthenticatedUserComponent implements OnInit {
 
   constructor(
     private httpService:HttpService,
+    private sharedService:SharedService,
   ) { }
 
   ngOnInit(): void {
+    this.httpService.getCurrentLoginUser()
+      .then(res => {
+        if (res.status === 200) {
+          return res.json()
+        } else {
+          return
+        }
+      })
+      .then(json => {
+        if (!json.user) {
+          return
+        }
+        console.log('Google user:')
+        console.log(json)
+        localStorage.setItem('currentUser', JSON.stringify(json.user))
+        localStorage.setItem('token', JSON.stringify(json.user.token))
+        this.sharedService.onLoginEvent.emit(json.user.userName)
+        this.sharedService.onRoleEvent.emit(json.user.role)
+      })
+      .catch(error => {
+        console.log(error);
+      })
   }
 
   searchTrack(inputvalue:any) {
