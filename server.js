@@ -643,27 +643,9 @@ app.post('/playlist/update', (req, res) => {
 
 // add a rating to the playlist
 app.post('/playlist/rating', (req, res) => {
-    const rating = req.body.rating.toString()
-    const playlistid = req.body.playlistid.toString()
-    const userid = req.body.playlistid.toString()
-    // check if the user own the playlist
-    User.findById(userid)
-        .then(user => {
-            let flag = false
-            user.playlists.forEach(listid => {
-                if (listid.toString() === id) {
-                    flag = true
-                }
-            })
-            if (!flag) {
-                 // user doesn't own the playlist
-                res.status(403).send('User does not own the playlist')
-                return
-            }
-        })
-        .catch(error => {
-            res.status(400).send();
-        });
+    const rating = req.body.rating
+    const playlistid = req.body.playlistid
+    const userid = req.body.playlistid
     
     Playlist.findOne({ _id: playlistid })
         .then(playlist => {
@@ -672,13 +654,14 @@ app.post('/playlist/rating', (req, res) => {
             } else {
                 if (playlist.rating) {
                     log('update rating')
-                    playlist.numberOfRatings = (parseInt(playlist.numberOfRatings) + 1).toString()
-                    const avg = (parseInt(playlist.rating) + parseInt(rating)) / parseInt(playlist.numberOfRatings)
-                    playlist.rating = avg.toFixed(1)
+                    playlist.numberOfRatings = playlist.numberOfRatings + 1
+                    playlist.rating = playlist.rating + rating
+                    const avg = playlist.rating / playlist.numberOfRatings
+                    playlist.avgRating = avg.toFixed(1)
                 } else {
                     log('no rating')
-                    playlist.numberOfRatings = '1'
-                    playlist.rating = parseInt(rating)
+                    playlist.numberOfRatings = 1
+                    playlist.rating = rating
                 }
                 playlist.lastModifiedTime = new Date()
                 playlist.save().then(

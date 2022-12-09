@@ -25,8 +25,8 @@ export class UnauthenticatedUserComponent implements OnInit {
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand']
   expandedElement!: PeriodicElement | null;
   PublicPlayList:any=[]
-  displayedColumnsPublicPlaylists:string[] = ['listname', 'creator', 'totalPlaytime', 'track_number']
-  columnsToDisplayPublicPlaylists:string[] =['listname', 'creator', 'totalPlaytime', 'track_number']
+  displayedColumnsPublicPlaylists:string[] = ['listname', 'creator', 'totalPlaytime', 'track_number', 'avgrating']
+  columnsToDisplayPublicPlaylists:string[] =['listname', 'creator', 'totalPlaytime', 'track_number', 'avgrating']
   columnsToDisplayWithExpandPublicPlaylists = [...this.columnsToDisplayPublicPlaylists, 'expand']
   expandedElementPublicPlaylists!: PeriodicElementPublicPlaylists | null;
   selectedType:string = ''
@@ -89,7 +89,9 @@ export class UnauthenticatedUserComponent implements OnInit {
           const temp = {"track_title":json.tracks[i]["track_title"],
                         "artist_name":json.tracks[i]["artist_name"],
                         "track_duration":json.tracks[i]["track_duration"],
-                        "track_favorites":json.tracks[i]["track_favorites"]}
+                        "track_favorites":json.tracks[i]["track_favorites"],
+                        "album_title":json.tracks[i]["album_title"],
+                        "track_date_created":json.tracks[i]["track_date_created"]}
           this.searchTrackResult.push(temp);
         }
         console.log(this.searchTrackResult);
@@ -140,9 +142,10 @@ export class UnauthenticatedUserComponent implements OnInit {
                         "creator":json.playlists[i]["username"],
                         "totalPlaytime":json.playlists[i]["totalPlaytime"],
                         "track_number":json.playlists[i]["tracks"].length,
-                        "tracks":json.playlists[i]["tracks"]};
-          const temptrack = {"tracks":json.playlists[i]["tracks"]};
-          // console.log(temp);
+                        "tracks":json.playlists[i]["tracks"],
+                        "avgrating":json.playlists[i]["avgRating"]};
+          // const temptrack = {"tracks":json.playlists[i]["tracks"]};
+          console.log(temp);
           this.PublicPlayList.push(temp);
         }
         console.log(this.PublicPlayList);
