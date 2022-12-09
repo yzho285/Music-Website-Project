@@ -1,10 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../commonServices/http-service';
-import {MatInputModule} from '@angular/material/input';
-import { json } from 'express';
-import { IntegerType } from 'mongodb';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import { waitForAsync } from '@angular/core/testing';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 
 
@@ -22,7 +18,7 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 })
 
 export class AuthUserComponent implements OnInit {
-
+  role : string=JSON.parse(localStorage.getItem('currentUser')||'{}').role
 
   YoutubeLink:string = ''
   lists:any=[]
@@ -33,12 +29,12 @@ export class AuthUserComponent implements OnInit {
   username: string=JSON.parse(localStorage.getItem('currentUser') || '{}').userName
   trackid: string=''
   userid: string=JSON.parse(localStorage.getItem('currentUser') || '{}').id
-  privacy: privTypes[] = [
-    {privTypes: 'private'},
-    {privTypes: 'public'}
-  ];
-  selectedType:string=''
-  visible = this.selectedType==='public'? '1':'0'
+  // privacy: privTypes[] = [
+  //   {privTypes: 'private'},
+  //   {privTypes: 'public'}
+  // ];
+  // selectedType:string=''
+  // visible = this.selectedType==='public'? '1':'0'
 //create
 listForm:FormGroup = new FormGroup({
   listname: new FormControl(
@@ -75,6 +71,15 @@ listForm:FormGroup = new FormGroup({
     {ratemark:'4'},
     {ratemark:'5'}
   ]
+  //reviews
+  reviewing:string=''
+  reviewinfo:reviews={
+    review: '',
+    playlistid: '',
+    userid: this.userid,
+    username: this.username,
+    hidden: ''
+  }
 
   constructor(
     private httpService:HttpService
@@ -89,6 +94,7 @@ listForm:FormGroup = new FormGroup({
 
   //get user's playlist
   getList(userid:string){
+    console.log(this.role)
     this.lists=[]
     this.httpService.queryAllPlaylistsOfUser(userid)
     .then(res => {
@@ -109,12 +115,13 @@ listForm:FormGroup = new FormGroup({
                       "track_number":json[i]["tracks"].length,
                       "tracks":json[i]["tracks"],
                       "description":json[i]["description"],
-                      "avgRating":json[i]["avgRating"]
+                      "avgRating":json[i]["avgRating"],
+                      "reviews":json[i]["reviews"]
                     };
         //console.log(temp);
         this.lists.push(temp);
       }
-      console.log(json);
+      console.log(this.lists);
     })
     .catch(error => {
       console.log(error);
@@ -226,20 +233,26 @@ rating(rating:string,playlistid:string){
     console.log(error);
   }) 
 }
+
 //add playlist review
-review(data:object){
-  this.httpService.addReviewToPlaylist(data)
+review(revtext:string,playlistid:string){
+
+  this.reviewinfo.hidden='0'
+  this.reviewinfo.review=revtext
+  this.reviewinfo.playlistid=playlistid
+
+  this.httpService.addReviewToPlaylist(this.reviewinfo)
   .then(res => {
     if (res.status === 200) {
       console.log(res);
       return res.json();
     } else {
-      alert("Could not add rating");
+      alert("Fail to submit review");
       return
     }
   })
   .then(res=>{
-    alert("Successfully reviewed")
+    alert("Review successfully submited")
     this.getList(this.userid)
   })
   .catch(error => {
@@ -247,7 +260,93 @@ review(data:object){
   }) 
   
 }
+//change the playlist to public
+publicing(userid:string){
+  const pac={
+    visible: '1',
+    description: '',
+    userid:''
+  }
+  pac.userid=userid
+  console.log(pac)
+  this.httpService.updateVisibleOrDescription(pac)
+  .then(res => {
+    if (res.status === 200) {
+      console.log(res);
+      return res.json();
+    } else {
+      alert("Fail to set to public");
+      return
+    }
+  })
+  .then(res=>{
+    alert("Successfully set to public")
+    this.getList(this.userid)
+  })
+  .catch(error => {
+    console.log(error);
+  }) 
+  
+}
+//change review hidden state
+    // data = {
+    //    "hidden": "1",
+    //    "playlistid": "638d54728c28b1151df70e1a",
+    //    "reviewid": "1"
+    // }
+hide(playlistid:string,reviewid:string){
+  const hid={
+    "hidden":"1",
+    "playlistid":"",
+    "reviewid":""
+  }
+  hid.playlistid=playlistid
+  hid.reviewid=reviewid
+  this.httpService.updateReviewHiddenStatus(hid)
+  .then(res => {
+    if (res.status === 200) {
+      console.log(res);
+      return res.json();
+    } else {
+      alert("Fail to hide the review");
+      return
+    }
+  })
+  .then(res=>{
+    alert("Successfully hide the review")
+    this.getList(this.userid)
+  })
+  .catch(error => {
+    console.log(error);
+  }) 
+}
 
+unhide(playlistid:string,reviewid:string){
+  const hid={
+    "hidden":"0",
+    "playlistid":"",
+    "reviewid":""
+  }
+  hid.playlistid=playlistid
+  hid.reviewid=reviewid
+  this.httpService.updateReviewHiddenStatus(hid)
+  .then(res => {
+    if (res.status === 200) {
+      console.log(res);
+      return res.json();
+    } else {
+      alert("Fail to unhide the review");
+      return
+    }
+  })
+  .then(res=>{
+    alert("Successfully unhide the review")
+    this.getList(this.userid)
+  })
+  .catch(error => {
+    console.log(error);
+  }) 
+}
 
 }
 
@@ -271,7 +370,25 @@ review(data:object){
       tracks:[]
       description:string
       visible:string
+      
     }
+    // add a rating to the playlist
+    // data = {
+    //    "review": "This is a review!!!!!!!!",
+    //    "playlistid": "638d54728c28b1151df70e1a",
+    //    "userid": "638d582d24fb889e019fbd14",
+    //    "username": "Admin1",
+    //    "hidden": "0" // 1 hide, 0 public
+    //}
+    export interface reviews {
+      review:string
+      playlistid:string
+      userid:string
+      username:string
+      hidden:string
+    }
+
+
 
     export interface PeriodicElementUserPlaylists {
       listid:string;
@@ -282,7 +399,7 @@ review(data:object){
       tracks:string;
       description:string;
       avgRating:string
-
+      reviews:[]
     }
 
     export interface privTypes {

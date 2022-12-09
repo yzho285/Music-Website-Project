@@ -625,7 +625,7 @@ app.post('/playlist/update', (req, res) => {
 
 
     const { visible, description } = req.body;
-    const changes = { visible, description, lastModifiedTime: new Date() };
+    const changes = { visible, lastModifiedTime: new Date() };
     
     Playlist.findByIdAndUpdate(playlistId, { $set: changes }, { new: true })
         .then(playlist => {

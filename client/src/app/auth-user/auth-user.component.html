@@ -33,9 +33,8 @@
           color="primary" 
           class="login-btn" 
           [disabled]="(!listForm.value.listname || !listForm.value.tracks)"
-          (click)="createNewPlaylist()"
-      >
-          Register
+          (click)="createNewPlaylist()">
+          Create
       </button>
   </form>
 </div>
@@ -199,6 +198,13 @@
 
             <a mat-button (click)="edittrack(trackid.value,element.listid,'1',userid)">add</a>
 
+
+            <mat-form-field class="review-field">
+              <mat-label>Review</mat-label>
+              <input matInput placeholder="" #reviewing>
+            </mat-form-field>
+            <a mat-button (click)="review(reviewing.value,element.listid)">submit</a>
+
             <mat-form-field appearance="fill">
               <mat-label>Rate Mark</mat-label>
               <select matNativeControl [(ngModel)]="selectedRate" name="type">
@@ -207,11 +213,30 @@
                 </option>
               </select>
             </mat-form-field>
+
             <a mat-button (click)="rating(selectedRate,element.listid)">submit</a>
+            <span *ngIf="element.reviews.length>1">
+            <h2>reviews:</h2>
+             </span>
+            <div class="example-element-track_duration">
+              <span *ngIf="(element.reviews.length>1 && element.reviews[1].hidden=='0')" >{{element.reviews[1].content}} 
+                <span *ngIf="element.reviews[1].hidden=='0'&&role=='1'">
+                  <a mat-button target="_blank" (click)="hide(element.listid,'2')">hide</a>
+                </span>
+                <span *ngIf="element.reviews[1].hidden=='1'&&role=='1'">
+                  <a mat-button target="_blank" (click)="unhide(element.listid,'2')">unhide</a>
+                </span>
+              </span>
+
+
+            </div>
 
           </div>
 
           <a mat-button target="_blank" (click)="deletelist(userid,element.listid)">DELETE</a>
+          <span *ngIf="element.visible=='0'">
+          <a mat-button target="_blank" (click)="publicing(userid)">PUBLIC</a>
+          </span>
         </td>
       </ng-container>
     
@@ -223,5 +248,3 @@
       </tr>
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 </table>
-
-{{selectedType}}
