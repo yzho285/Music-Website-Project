@@ -19,7 +19,7 @@ import { FormGroup, FormControl, Validators} from '@angular/forms';
 
 export class AuthUserComponent implements OnInit {
   role : string=JSON.parse(localStorage.getItem('currentUser')||'{}').role
-
+  flag:boolean=true
   YoutubeLink:string = ''
   lists:any=[]
   displayedColumnsUserPlaylists:string[] = ['listname', 'visible', 'totalPlaytime', 'track_number', 'description','avgRating']
@@ -99,7 +99,7 @@ listForm:FormGroup = new FormGroup({
     this.httpService.queryAllPlaylistsOfUser(userid)
     .then(res => {
       if (res.status === 200) {
-        //console.log(res);
+        console.log(res);
         return res.json();
       } else {
         alert("could not get list");
@@ -151,17 +151,19 @@ listForm:FormGroup = new FormGroup({
     this.listinfo.description=this.listForm.value.description
 
     this.httpService.createNewPlaylist(this.listinfo)
+    
     .then(res => {
       if (res.status === 200) {
         console.log(res);
+        alert("New play list successfully created")
         return res.json();
       } else {
+        this.flag=false
         alert("Could not create list");
         return
       }
     })
     .then(json =>{
-      alert("New play list successfully created")
       this.getList(this.userid)
     })
     .catch(error => {
@@ -175,6 +177,7 @@ deletelist(userid:string,listid:string){
   .then(res => {
     if (res.status === 200) {
       console.log(res);
+      alert("Successfully deleted");
       return res.json();
     } else {
       alert("Could not delete list");
@@ -182,7 +185,6 @@ deletelist(userid:string,listid:string){
     }
   })
   .then(res=>{
-    alert("Successfully deleted")
     this.getList(userid)
   }
   )
@@ -197,6 +199,7 @@ edittrack(trackid:string, playlistid:string, flag:string, userid:string){
   .then(res => {
     if (res.status === 200) {
       console.log(res);
+      alert("Successfully updated")
       return res.json();
     } else {
       alert("Could not edit list");
@@ -204,7 +207,7 @@ edittrack(trackid:string, playlistid:string, flag:string, userid:string){
     }
   })
   .then(res=>{
-    alert("Successfully updated")
+
     this.getList(userid)
   })
   .catch(error => {
@@ -219,6 +222,7 @@ rating(rating:string,playlistid:string){
   .then(res => {
     if (res.status === 200) {
       console.log(res);
+      alert("Successfully rated");
       return res.json();
     } else {
       alert("Could not add rating");
@@ -226,7 +230,7 @@ rating(rating:string,playlistid:string){
     }
   })
   .then(res=>{
-    alert("Successfully rated")
+
     this.getList(this.userid)
   })
   .catch(error => {
@@ -245,6 +249,7 @@ review(revtext:string,playlistid:string){
   .then(res => {
     if (res.status === 200) {
       console.log(res);
+      alert("Review successfully submited");
       return res.json();
     } else {
       alert("Fail to submit review");
@@ -252,7 +257,6 @@ review(revtext:string,playlistid:string){
     }
   })
   .then(res=>{
-    alert("Review successfully submited")
     this.getList(this.userid)
   })
   .catch(error => {
@@ -273,6 +277,8 @@ publicing(userid:string){
   .then(res => {
     if (res.status === 200) {
       console.log(res);
+
+      alert("Successfully set to public");
       return res.json();
     } else {
       alert("Fail to set to public");
@@ -280,7 +286,6 @@ publicing(userid:string){
     }
   })
   .then(res=>{
-    alert("Successfully set to public")
     this.getList(this.userid)
   })
   .catch(error => {
@@ -306,6 +311,7 @@ hide(playlistid:string,reviewid:string){
   .then(res => {
     if (res.status === 200) {
       console.log(res);
+      alert("Successfully hide the review");
       return res.json();
     } else {
       alert("Fail to hide the review");
@@ -313,7 +319,6 @@ hide(playlistid:string,reviewid:string){
     }
   })
   .then(res=>{
-    alert("Successfully hide the review")
     this.getList(this.userid)
   })
   .catch(error => {
@@ -333,6 +338,8 @@ unhide(playlistid:string,reviewid:string){
   .then(res => {
     if (res.status === 200) {
       console.log(res);
+
+      alert("Successfully unhide the review");
       return res.json();
     } else {
       alert("Fail to unhide the review");
@@ -340,7 +347,6 @@ unhide(playlistid:string,reviewid:string){
     }
   })
   .then(res=>{
-    alert("Successfully unhide the review")
     this.getList(this.userid)
   })
   .catch(error => {
