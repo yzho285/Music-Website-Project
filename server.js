@@ -457,8 +457,8 @@ app.post('/playlist', (req, res) => {
 
 /// delete a playlist by listID and update info by userid
 app.delete("/playlist", (req, res) => {
-    const id = req.query.listid.toString()
-    const userid = req.query.userid.toString()
+    const id = req.body.listid.toString()
+    const userid = req.body.userid.toString()
     User.findById(userid)
         .then(user => {
             let flag = false
