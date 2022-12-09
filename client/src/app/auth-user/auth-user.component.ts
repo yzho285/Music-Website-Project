@@ -5,6 +5,7 @@ import { json } from 'express';
 import { IntegerType } from 'mongodb';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { waitForAsync } from '@angular/core/testing';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
 
 
 @Component({
@@ -25,8 +26,8 @@ export class AuthUserComponent implements OnInit {
 
   YoutubeLink:string = ''
   lists:any=[]
-  displayedColumnsUserPlaylists:string[] = ['listname', 'visible', 'totalPlaytime', 'track_number', 'description']
-  columnsToDisplayUserPlaylists:string[] =['listname', 'visible', 'totalPlaytime', 'track_number', 'description']
+  displayedColumnsUserPlaylists:string[] = ['listname', 'visible', 'totalPlaytime', 'track_number', 'description','avgRating']
+  columnsToDisplayUserPlaylists:string[] =['listname', 'visible', 'totalPlaytime', 'track_number', 'description','avgRating']
   columnsToDisplayWithExpandUserPlaylists = [...this.columnsToDisplayUserPlaylists, 'expand']
   expandedElementUserPlaylists!: PeriodicElementUserPlaylists | null;
   username: string=JSON.parse(localStorage.getItem('currentUser') || '{}').userName
@@ -39,14 +40,29 @@ export class AuthUserComponent implements OnInit {
   selectedType:string=''
   visible = this.selectedType==='public'? '1':'0'
 //create
-  description:string=''
-  listname:string=''
-  tracks:any=[]
+listForm:FormGroup = new FormGroup({
+  listname: new FormControl(
+    '', 
+    {
+      validators: [Validators.required],
+      updateOn: 'blur'
+    }
+  ),
+  tracks: new FormControl(
+    '', 
+    {
+      validators: [Validators.required],
+      updateOn: 'blur'
+    }
+  ),
+    description: new FormControl(''),
+    visible: new FormControl
+})
   listinfo: listdata={
     listname: '',
     username: JSON.parse(localStorage.getItem('currentUser') || '{}').userName,
     userid: this.userid,
-    tracks: '',
+    tracks: [],
     description: '',
     visible: ''
   }
@@ -92,8 +108,8 @@ export class AuthUserComponent implements OnInit {
                       "totalPlaytime":json[i]["totalPlaytime"],
                       "track_number":json[i]["tracks"].length,
                       "tracks":json[i]["tracks"],
-                      "description":json[i]["description"]
-                    
+                      "description":json[i]["description"],
+                      "avgRating":json[i]["avgRating"]
                     };
         //console.log(temp);
         this.lists.push(temp);
@@ -122,11 +138,12 @@ export class AuthUserComponent implements OnInit {
     window.open(this.YoutubeLink,'_blank');
   }
 //create new playlist
-  createNewPlaylist(data:object){
+  createNewPlaylist(){
+    this.listinfo.listname=this.listForm.value.listname
+    this.listinfo.tracks=this.listForm.value.tracks.split(',')
+    this.listinfo.description=this.listForm.value.description
 
-    console.log(data)
-    //data.userid=JSON.parse(localStorage.getItem('currentUser') || '{}').id
-    this.httpService.createNewPlaylist(data)
+    this.httpService.createNewPlaylist(this.listinfo)
     .then(res => {
       if (res.status === 200) {
         console.log(res);
@@ -137,7 +154,8 @@ export class AuthUserComponent implements OnInit {
       }
     })
     .then(json =>{
-
+      alert("New play list successfully created")
+      this.getList(this.userid)
     })
     .catch(error => {
       console.log(error);
@@ -209,10 +227,25 @@ rating(rating:string,playlistid:string){
   }) 
 }
 //add playlist review
-review(){
-  this.httpService.addReviewToPlaylist(){
-    
-  }
+review(data:object){
+  this.httpService.addReviewToPlaylist(data)
+  .then(res => {
+    if (res.status === 200) {
+      console.log(res);
+      return res.json();
+    } else {
+      alert("Could not add rating");
+      return
+    }
+  })
+  .then(res=>{
+    alert("Successfully reviewed")
+    this.getList(this.userid)
+  })
+  .catch(error => {
+    console.log(error);
+  }) 
+  
 }
 
 
@@ -235,7 +268,7 @@ review(){
       listname:string
       username: string
       userid: string
-      tracks:string
+      tracks:[]
       description:string
       visible:string
     }
@@ -247,7 +280,9 @@ review(){
       totalPlaytime: string;
       track_number: string;
       tracks:string;
-      description:string
+      description:string;
+      avgRating:string
+
     }
 
     export interface privTypes {
