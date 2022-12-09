@@ -48,8 +48,6 @@ listForm:FormGroup = new FormGroup({
       updateOn: 'blur'
     }
   ),
-  username: new FormControl(''),
-  userid: new FormControl(''),
   tracks: new FormControl(
     '', 
     {
@@ -59,14 +57,12 @@ listForm:FormGroup = new FormGroup({
   ),
     description: new FormControl(''),
     visible: new FormControl
-
-
 })
   listinfo: listdata={
     listname: '',
     username: JSON.parse(localStorage.getItem('currentUser') || '{}').userName,
     userid: this.userid,
-    tracks: '',
+    tracks: [],
     description: '',
     visible: ''
   }
@@ -142,11 +138,12 @@ listForm:FormGroup = new FormGroup({
     window.open(this.YoutubeLink,'_blank');
   }
 //create new playlist
-  createNewPlaylist(data:object){
+  createNewPlaylist(){
+    this.listinfo.listname=this.listForm.value.listname
+    this.listinfo.tracks=this.listForm.value.tracks.split(',')
+    this.listinfo.description=this.listForm.value.description
 
-    console.log(data)
-    //data.userid=JSON.parse(localStorage.getItem('currentUser') || '{}').id
-    this.httpService.createNewPlaylist(data)
+    this.httpService.createNewPlaylist(this.listinfo)
     .then(res => {
       if (res.status === 200) {
         console.log(res);
@@ -157,7 +154,8 @@ listForm:FormGroup = new FormGroup({
       }
     })
     .then(json =>{
-
+      alert("New play list successfully created")
+      this.getList(this.userid)
     })
     .catch(error => {
       console.log(error);
@@ -270,7 +268,7 @@ review(data:object){
       listname:string
       username: string
       userid: string
-      tracks:string
+      tracks:[]
       description:string
       visible:string
     }

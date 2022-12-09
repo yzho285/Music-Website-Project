@@ -1,55 +1,48 @@
 <h2>User Created Lists:</h2>
 
-<!-- <div class="register-container">
-  <form [formGroup]="registerForm" class="register-form">
-      <mat-form-field class="email-input-field">
-        <mat-label>Enter your email</mat-label>
-        <input matInput placeholder="" formControlName="email" required>
-        <mat-error *ngIf="registerForm.controls['email'].hasError('email') && !registerForm.controls['email'].hasError('required')">
-          Please enter a valid email address
-        </mat-error>
-        <mat-error *ngIf="registerForm.controls['email'].hasError('required')">
-          Email is <strong>required</strong>
+<div class="register-container">
+  <form [formGroup]="listForm" class="register-form">
+      <mat-form-field class="listname-input-field">
+        <mat-label>Enter new list name</mat-label>
+        <input matInput placeholder="" formControlName="listname" required>
+        <mat-error *ngIf="listForm.controls['listname'].hasError('required')">
+          List name is <strong>required</strong>
         </mat-error>
       </mat-form-field>
-      <mat-form-field class="password-input-field">
-        <mat-label>Username</mat-label>
-        <input matInput placeholder="" formControlName="userName">
-        <mat-error *ngIf="registerForm.controls['userName'].hasError('required')">
-          Username is <strong>required</strong>
+      <mat-form-field class="tracks-input-field">
+        <mat-label>tracks</mat-label>
+        <input matInput placeholder="" formControlName="tracks">
+        <mat-error *ngIf="listForm.controls['tracks'].hasError('required')">
+          tracks are <strong>required</strong>
         </mat-error>
       </mat-form-field>
-      <mat-form-field class="password-input-field">
-          <mat-label>Password</mat-label>
-        <input matInput placeholder="" formControlName="password">  
-        <mat-error *ngIf="registerForm.controls['password'].hasError('required')">
-          Password is <strong>required</strong>
-        </mat-error>
+      <mat-form-field class="description-input-field">
+          <mat-label>description</mat-label>
+        <input matInput placeholder="" formControlName="description">  
       </mat-form-field>
+      <!-- <mat-form-field appearance="fill">
+        <mat-label>Privacy type</mat-label>
+        <select matNativeControl [(ngModel)]="selectedType" name="type">
+          <option *ngFor="let p of privacy" [value]="p.privTypes">
+            {{p.privTypes}}
+          </option>
+        </select>
+      </mat-form-field> -->
       <button 
           mat-raised-button 
           color="primary" 
           class="login-btn" 
-          [disabled]="(!registerForm.value.email || !registerForm.value.password || !registerForm.value.userName) || verify"
-          (click)="submitRegisterForm()"
+          [disabled]="(!listForm.value.listname || !listForm.value.tracks)"
+          (click)="createNewPlaylist()"
       >
           Register
       </button>
-      <button 
-          *ngIf="verify"
-          mat-raised-button 
-          color="primary" 
-          class="email-btn" 
-          (click)="verifyEmail()"
-      >
-        Verify Your Email Here
-      </button>
   </form>
-</div> -->
+</div>
 
 
 
-<div class="list-container">
+<!-- <div class="list-container">
 
         <mat-form-field class="listname-field">
           <mat-label>ListName</mat-label>
@@ -73,11 +66,11 @@
           </select>
         </mat-form-field>
 
-        <button mat-raised-button color = 'primary' (click)="createNewPlaylist(listinfo)">Create</button>
+        <button mat-raised-button color = 'primary' (click)="createNewPlaylist(listinfo)">Create</button> 
         
         
 
-</div>
+</div> -->
 <button mat-raised-button color = 'primary' (click)="getList(userid)">Get my lists</button>
 
 <table *ngIf="lists?.length" mat-table
