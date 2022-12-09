@@ -655,8 +655,9 @@ app.post('/playlist/rating', (req, res) => {
                 if (playlist.rating) {
                     log('update rating')
                     playlist.numberOfRatings = playlist.numberOfRatings + 1
-                    const avg = playlist.rating + rating / playlist.numberOfRatings
-                    playlist.rating = avg.toFixed(1)
+                    playlist.rating = playlist.rating + rating
+                    const avg = playlist.rating / playlist.numberOfRatings
+                    playlist.avgRating = avg.toFixed(1)
                 } else {
                     log('no rating')
                     playlist.numberOfRatings = 1

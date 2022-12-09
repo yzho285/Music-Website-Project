@@ -56,6 +56,11 @@ const PlaylistSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
+    avgRating: {
+        type: Number,
+        required: true,
+        default: 0
+    },
     totalPlaytime: {
         type: String,
         required: false
