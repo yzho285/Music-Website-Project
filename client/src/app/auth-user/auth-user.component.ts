@@ -99,7 +99,7 @@ listForm:FormGroup = new FormGroup({
     this.httpService.queryAllPlaylistsOfUser(userid)
     .then(res => {
       if (res.status === 200) {
-        //console.log(res);
+        console.log(res);
         return res.json();
       } else {
         alert("could not get list");
