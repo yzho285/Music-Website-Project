@@ -157,7 +157,20 @@
             </mat-form-field>
 
             <a mat-button (click)="edittrack(trackid.value,element.listid,'1',userid)">add</a>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Rate Mark</mat-label>
+              <select matNativeControl [(ngModel)]="selectedRate" name="type">
+                <option *ngFor="let r of rate" [value]="r.ratemark">
+                  {{r.ratemark}}
+                </option>
+              </select>
+            </mat-form-field>
+            <a mat-button (click)="rating(selectedRate,element.listid)">submit</a>
+
           </div>
+
+          <a mat-button target="_blank" (click)="deletelist(userid,element.listid)">DELETE</a>
         </td>
       </ng-container>
     
@@ -170,4 +183,4 @@
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 </table>
 
-{{visible}}
+{{selectedType}}

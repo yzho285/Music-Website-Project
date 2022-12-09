@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { HttpService } from '../commonServices/http-service';
 import {MatInputModule} from '@angular/material/input';
 import { json } from 'express';
@@ -50,6 +50,15 @@ export class AuthUserComponent implements OnInit {
     description: '',
     visible: ''
   }
+  //rating
+  selectedRate:string=''
+  rate:rateMarks[]=[
+    {ratemark:'1'},
+    {ratemark:'2'},
+    {ratemark:'3'},
+    {ratemark:'4'},
+    {ratemark:'5'}
+  ]
 
   constructor(
     private httpService:HttpService
@@ -62,24 +71,7 @@ export class AuthUserComponent implements OnInit {
     this.getList(this.userid)
   }
 
-      // get all playlists of a user
-    //   queryAllPlaylistsOfUser(userid:string) {
-    //     const url = this.host + "/playlists?" + new URLSearchParams({
-    //         userid: userid
-    //     })
-    //     return fetch(url)
-    // }
-  // getLists(){
-  //   let userid = JSON.parse(localStorage.getItem('currentUser') || '{}').id
-  //   this.httpService.queryAllPlaylistsOfUser(userid)
-  //   .then(json => {
-  //     this.genres = json.genres
-  //   })
-  //   .catch(error => {
-  //     console.log(error);
-  //   })
-  // }
-  
+  //get user's playlist
   getList(userid:string){
     this.lists=[]
     this.httpService.queryAllPlaylistsOfUser(userid)
@@ -129,7 +121,7 @@ export class AuthUserComponent implements OnInit {
     console.log(element);
     window.open(this.YoutubeLink,'_blank');
   }
-
+//create new playlist
   createNewPlaylist(data:object){
 
     console.log(data)
@@ -151,7 +143,7 @@ export class AuthUserComponent implements OnInit {
       console.log(error);
     })
 }
-
+//deleting a playlist
 deletelist(userid:string,listid:string){
   if (confirm('Are you sure?')){
   this.httpService.deletePlaylist(userid,listid)
@@ -174,7 +166,7 @@ deletelist(userid:string,listid:string){
   })
 }
 }
-
+//add/remove track to a playlist
 edittrack(trackid:string, playlistid:string, flag:string, userid:string){
   this.httpService.addOrDeleteATrack(trackid,playlistid,flag,userid)
   .then(res => {
@@ -194,6 +186,36 @@ edittrack(trackid:string, playlistid:string, flag:string, userid:string){
     console.log(error);
   }) 
 }
+//add rating to a playlist
+rating(rating:string,playlistid:string){
+  //console.log(rating)
+  //console.log(playlistid)
+  this.httpService.addRatingToPlaylist(rating,playlistid)
+  .then(res => {
+    if (res.status === 200) {
+      console.log(res);
+      return res.json();
+    } else {
+      alert("Could not add rating");
+      return
+    }
+  })
+  .then(res=>{
+    alert("Successfully rated")
+    this.getList(this.userid)
+  })
+  .catch(error => {
+    console.log(error);
+  }) 
+}
+//add playlist review
+review(){
+  this.httpService.addReviewToPlaylist(){
+    
+  }
+}
+
+
 }
 
 
@@ -230,4 +252,8 @@ edittrack(trackid:string, playlistid:string, flag:string, userid:string){
 
     export interface privTypes {
       privTypes: string;
+    }
+
+    export interface rateMarks{
+      ratemark:string
     }
