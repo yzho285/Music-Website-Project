@@ -95,7 +95,7 @@ export class RegisterComponent implements OnInit {
         localStorage.setItem('currentUser', JSON.stringify(json.user));
         localStorage.setItem('token', json.token);
         this.sharedService.onLoginEvent.emit(json.userName);
-        this.router.navigate(['/', 'example']);
+        this.router.navigate(['/', 'homepage']);
 
       })
   }

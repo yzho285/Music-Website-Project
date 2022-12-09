@@ -58,7 +58,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('token', json.token);
         this.sharedService.onLoginEvent.emit(json.user.userName);
         this.sharedService.onRoleEvent.emit(json.user.role);
-        this.router.navigate(['/', 'example']);
+        this.router.navigate(['/', 'homepage']);
       })
       .catch(e => {
         console.log(e)
@@ -81,7 +81,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('currentUser', JSON.stringify(json))
         this.sharedService.onLoginEvent.emit(json.userName)
         this.sharedService.onRoleEvent.emit(json.role)
-        this.router.navigate(['/', 'example'])
+        this.router.navigate(['/', 'homepage'])
       })
   }
 
