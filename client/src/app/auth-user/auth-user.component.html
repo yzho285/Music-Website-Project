@@ -218,22 +218,22 @@
             <span *ngIf="element.reviews.length>1">
             <h2>reviews:</h2>
              </span>
-            <div class="example-element-track_duration">
-              <span *ngIf="(element.reviews.length>1 && element.reviews[1].hidden=='0')" >{{element.reviews[1].content}} 
-                <span *ngIf="element.reviews[1].hidden=='0'&&role=='1'">
-                  <a mat-button target="_blank" (click)="hide(element.listid,'2')">hide</a>
-                </span>
-                <span *ngIf="element.reviews[1].hidden=='1'&&role=='1'">
-                  <a mat-button target="_blank" (click)="unhide(element.listid,'2')">unhide</a>
-                </span>
-              </span>
-
-
-            </div>
 
           </div>
 
           <a mat-button target="_blank" (click)="deletelist(userid,element.listid)">DELETE</a>
+          <div class="example-element-track_duration">
+            <span *ngIf="(element.reviews.length>1 && element.reviews[1].hidden=='0') " >{{element.reviews[1].content}} 
+              <span *ngIf="element.reviews[1].hidden=='0'&&role=='1'">
+                <a mat-button target="_blank" (click)="hide(element.listid,'2')">hide</a>
+              </span>
+              <span *ngIf="element.reviews[1].hidden=='1'&&role=='1'">
+                <a mat-button target="_blank" (click)="unhide(element.listid,'2')">unhide</a>
+              </span>
+            </span>
+
+
+          </div>
           <span *ngIf="element.visible=='0'">
           <a mat-button target="_blank" (click)="publicing(userid)">PUBLIC</a>
           </span>
