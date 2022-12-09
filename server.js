@@ -670,7 +670,7 @@ app.post('/playlist/rating', (req, res) => {
             if (!playlist) {
                 res.status(404).send('Playlist does not exist');
             } else {
-                if (playlist?.rating) {
+                if (playlist.rating) {
                     log('update rating')
                     playlist.numberOfRatings = (parseInt(playlist.numberOfRatings) + 1).toString()
                     const avg = (parseInt(playlist.rating) + parseInt(rating)) / parseInt(playlist.numberOfRatings)
@@ -680,6 +680,7 @@ app.post('/playlist/rating', (req, res) => {
                     playlist.numberOfRatings = '1'
                     playlist.rating = parseInt(rating)
                 }
+                playlist.lastModifiedTime = new Date()
                 playlist.save().then(
                     result => {
                         log('Update rating success')
