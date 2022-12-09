@@ -152,16 +152,29 @@ deletelist(userid:string,listid:string){
     }
   })
   .then(res=>{
-    console.log(listid)
-    
+    console.log(userid) 
   }
-    
   )
   .catch(error => {
     console.log(error);
   })
 }
 
+edittrack(trackid:string, playlistid:string, flag:string, userid:string){
+  this.httpService.addOrDeleteATrack(trackid,playlistid,flag,userid)
+  .then(res => {
+    if (res.status === 200) {
+      console.log(res);
+      return res.json();
+    } else {
+      alert("Could not delete list");
+      return
+    }
+  })
+  .catch(error => {
+    console.log(error);
+  })
+}
 
 
 
