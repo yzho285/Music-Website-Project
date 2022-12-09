@@ -239,7 +239,7 @@ app.post("/password/update", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 });
 
@@ -259,7 +259,7 @@ app.post("/admin/deactivate", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     const activate = req.body.status.toString()
@@ -277,7 +277,7 @@ app.post("/admin/deactivate", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 });
 
@@ -301,7 +301,7 @@ app.post("/admin/user/upgrade", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     // Update the user password by their id.
@@ -326,7 +326,7 @@ app.post("/admin/user/upgrade", (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 });
 
@@ -406,7 +406,7 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
 // return all playlists detail info created by a user using their userid
 // /playlists？userid=xxx
 app.get('/playlists', (req, res) => {
-    User.findById(req.query.userid.toString())
+    User.findById(req.query.userid.toString()).sort({ lastModifiedTime: -1 })
         .then(user => {
             if (!user) {
                 res.status(404).send();
@@ -419,7 +419,7 @@ app.get('/playlists', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 })
 
@@ -443,7 +443,7 @@ app.post('/playlist', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     const newList = new Playlist({
@@ -484,7 +484,7 @@ app.post('/playlist', (req, res) => {
                             }
                         })
                         .catch(error => {
-                            res.status(400).send(); // bad request for changing the student.
+                            res.status(400).send();
                         });
                 },
                 error => {
@@ -518,7 +518,7 @@ app.delete("/playlist", (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
     Playlist.findByIdAndRemove(id)
@@ -547,7 +547,7 @@ app.delete("/playlist", (req, res) => {
                     }
                 })
                 .catch(error => {
-                    res.status(400).send(); // bad request for changing the student.
+                    res.status(400).send();
                 });
             }
         })
@@ -582,6 +582,7 @@ app.post('/playlist/tracks/update', (req, res) => {
                                 })
                                 playlist.totalPlaytime = convertToDuration(convertToSeconds(playlist.totalPlaytime) - convertToSeconds(track.track_duration))
                             }
+                            playlist.lastModifiedTime = new Date()
                             playlist.save().then(
                                 result => {
                                     res.send(playlist);
@@ -594,7 +595,7 @@ app.post('/playlist/tracks/update', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send(); 
         });
 
 })
@@ -619,7 +620,7 @@ app.post('/playlist/update', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 
@@ -635,7 +636,7 @@ app.post('/playlist/update', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 })
@@ -661,7 +662,7 @@ app.post('/playlist/rating', (req, res) => {
             }
         })
         .catch(error => {
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
     
     Playlist.findOne({ _id: playlistid })
@@ -691,7 +692,7 @@ app.post('/playlist/rating', (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 })
@@ -727,7 +728,7 @@ app.post('/playlist/review', (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 
 })
@@ -760,7 +761,7 @@ app.post('/playlist/review/update', (req, res) => {
         })
         .catch(error => {
             log(error)
-            res.status(400).send(); // bad request for changing the student.
+            res.status(400).send();
         });
 })
 
@@ -847,7 +848,7 @@ app.post("/admin/policy", (req, res) => {
             })
             .catch(error => {
                 log(error)
-                res.status(400).send(); // bad request for changing the student.
+                res.status(400).send();
             });
     }
 });
