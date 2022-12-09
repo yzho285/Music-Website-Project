@@ -65,7 +65,9 @@ export class UnauthenticatedUserComponent implements OnInit {
           const temp = {"track_title":json.tracks[i]["track_title"],
                         "artist_name":json.tracks[i]["artist_name"],
                         "track_duration":json.tracks[i]["track_duration"],
-                        "track_favorites":json.tracks[i]["track_favorites"]}
+                        "track_favorites":json.tracks[i]["track_favorites"],
+                        "album_title":json.tracks[i]["album_title"],
+                        "track_date_created":json.tracks[i]["track_date_created"]}
           this.searchTrackResult.push(temp);
         }
         console.log(this.searchTrackResult);
