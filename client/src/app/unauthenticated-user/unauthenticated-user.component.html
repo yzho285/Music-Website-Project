@@ -88,6 +88,7 @@
           <div class="example-element-artist_name"> {{element.creator}} </div>
         </div>
         <div class="example-element-track_duration">
+          <div>description:{{element.description}}</div>
           <span *ngIf="element.tracks.length>0">{{element.tracks[0].track_title}}
             <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[0].track_title)" style="background-color:brown">Play on YouTube</a> 
           </span>
