@@ -242,7 +242,7 @@ export class HttpService {
         const url = this.host + "/playlist/rating"
         const data = {
             playlistid: playlistid,
-            rating: rating
+            rating: parseInt(rating)
         }
         const request = new Request(url, {
             method: "post",
