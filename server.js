@@ -411,7 +411,6 @@ app.get('/playlists', (req, res) => {
             if (!user) {
                 res.status(404).send();
             } else {
-                log(user.playlists)
                 Playlist.find({'_id':{$in: user.playlists}})
                     .then(playlists => {
                         res.send(playlists)
@@ -602,24 +601,27 @@ app.post('/playlist/tracks/update', (req, res) => {
 
 // update visible, description of a playlist
 app.post('/playlist/update', (req, res) => {
+    log(req.body)
     const playlistId = req.body.playlistid.toString()
-    const userid = req.body.playlistid.toString()
+    const userid = req.body.userid.toString()
     // check if the user own the playlist
     User.findById(userid)
         .then(user => {
             let flag = false
+            log(user)
             user.playlists.forEach(listid => {
-                if (listid.toString() === id) {
+                if (listid.toString() === playlistId) {
                     flag = true
                 }
             })
-            if (!flag) {
+            if (!flag && user.role !== '1') {
                  // user doesn't own the playlist
                 res.status(403).send('User does not own the playlist')
                 return
             }
         })
         .catch(error => {
+            log(error)
             res.status(400).send();
         });
 
