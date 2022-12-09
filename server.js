@@ -55,6 +55,8 @@ app.use(expressJWT({ secret: secretKey, algorithms: ['HS256'] }).unless({
         '/admin/message',
         '/login/google',
         '/login/google/callback',
+        '/homepage',
+        '/users/check-session',
         /^\/confirmation\/.*/
     ]
 }))
@@ -157,6 +159,8 @@ app.post("/users/login", (req, res) => {
             } else {
                 req.session.user = user._id;
                 req.session.email = user.email;
+                req.session.role = user.role;
+                req.session.username = user.userName;
                 const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
                     expiresIn: "24h",
                  });
@@ -175,10 +179,30 @@ app.post("/users/login", (req, res) => {
         });
 });
 
+// check if a use is logged in
+app.get("/users/check-session", (req, res) => {
+    if (session.user !== '') {
+        const user = {
+            currentUser: session.email, 
+            id: session.user, 
+            userName: session.username, 
+            role: session.role, 
+        }
+        res.send({ user });
+    } else {
+        res.status(401).send();
+    }
+});
+
 
 // logout a user
 app.get("/users/logout", (req, res) => {
     // Remove the session
+    session.user = '';
+    session.email = '';
+    session.role = '';
+    session.username = '';
+
     req.session.destroy(error => {
         if (error) {
             res.status(500).send(error);
@@ -839,25 +863,16 @@ app.use(session({
   }))
 // init passport on every route call.
 app.use(passport.initialize()) 
- // allow passport to use "express-session".
-app.use(passport.session())    
-// The "authUser" is a function that we will define later will contain 
-// the steps to authenticate a user, and will return the "authenticated user".
-// const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
-// passport.use(new GoogleStrategy({
-//     clientID:     GOOGLE_CLIENT_ID,
-//     clientSecret: GOOGLE_CLIENT_SECRET,
-//     callbackURL: "http://localhost:5000/login/google/callback",
-//     passReqToCallback   : true
-//   },
-//   function(request, accessToken, refreshToken, profile, done) {
-//     User.findOrCreate({ googleEmail: profile.email }, function (err, user) {
-//       return done(err, user);
-//     });
-//   }
-// ));
-const GoogleStrategy = require('passport-google-oauth2').Strategy;
 
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+  
+passport.deserializeUser(function(user, done) {
+   done(null, user);
+});
+
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
 passport.use(new GoogleStrategy({
     clientID:     '480225921509-djnrq95jfp6hm0vnvl198kmdeci87eil.apps.googleusercontent.com',
     clientSecret: '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',
@@ -866,19 +881,68 @@ passport.use(new GoogleStrategy({
   },
   function(request, accessToken, refreshToken, profile, done) {
     log(profile)
+    User.findOne({ email: profile.email})
+        .then(user => {
+            if(!user){
+                const user = new User({
+                    email: profile.email.toString(),
+                    userName: profile.displayName.toString(),
+                    role: '2',
+                    activate: '1',
+                    playlists: [],
+                    reviews: []
+                });
+                // Save the user
+                user.save().then(
+                    user => {
+                        log('google register success')
+                        session.user = user._id;
+                        session.email = user.email;
+                        session.role = user.role;
+                        session.username = user.userName;
+                        const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
+                            expiresIn: "24h",
+                         });
+                        session.token = token;
+                    },
+                    error => {
+                        log('google register failed')
+                        log(error)
+                        // res.status(400).send(error)
+                    }
+                );
+            } else {
+                session.user = user._id;
+                session.email = user.email;
+                session.role = user.role;
+                session.username = user.userName;
+                const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
+                    expiresIn: "24h",
+                 });
+                session.token = token;
+                log('session')
+                log(session)
+            }
+        })
+
+    return done(null, profile)
   }
 ));
+
+
 
 app.get('/login/google',
   passport.authenticate('google', { scope:
       [ 'email', 'profile' ] }
 ));
 
-app.get( '/login/google/callback',
+app.get('/login/google/callback',
     passport.authenticate( 'google', {
-        successRedirect: '/auth/google/success',
-        failureRedirect: '/auth/google/failure'
-}));
+        successRedirect: 'http://localhost:4200/homepage',
+        failureRedirect: 'http://localhost:4200/homepage'
+    }
+    
+));
 
 
 // get a security/DMCA/AUP policy

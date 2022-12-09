@@ -86,6 +86,10 @@ export class LoginComponent implements OnInit {
   }
 
   loginGoogle() {
-
+    fetch('http://localhost:5000/login/google')
+    .then(res => {
+      log(res)
+      log(res.json)
+    })
   }
 }
