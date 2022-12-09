@@ -4,20 +4,24 @@
 
         <mat-form-field class="listname-field">
           <mat-label>ListName</mat-label>
-          <input matInput placeholder="" #listinfo.listname>
+          <input matInput placeholder="" #listname>
         </mat-form-field>
       
         <mat-form-field class="tracks-field">
             <mat-label>Tracks</mat-label>
-          <input matInput placeholder="" #listinfo.trackss>
+          <input matInput placeholder="" #tracks>
         </mat-form-field>
         <mat-form-field class="description-field">
             <mat-label>Description</mat-label>
-          <input matInput placeholder="" #listinfo.description>
+          <input matInput placeholder="" #description>
         </mat-form-field>
-        <mat-form-field class="vis-field">
-          <mat-label>1 for public</mat-label>
-        <input matInput placeholder="" #visible>
+        <mat-form-field appearance="fill">
+          <mat-label>Request type</mat-label>
+          <select matNativeControl [(ngModel)]="selectedType" name="type">
+            <option *ngFor="let p of privacy" [value]="p.privTypes">
+              {{p.privTypes}}
+            </option>
+          </select>
         </mat-form-field>
 
         <button mat-raised-button color = 'primary' (click)="createNewPlaylist(listinfo)">Create</button>
@@ -51,81 +55,121 @@
                [@detailExpand]="element == expandedElementUserPlaylists ? 'expanded' : 'collapsed'">
             <div class="example-element-diagram">
               <div class="example-element-track_title"> {{element.listname}} </div>
-              <div class="example-element-artist_name"> {{element.visible}} </div>
+              <div class="example-element-visible"> {{element.visible}} </div>
+              <div class="example-element-description"> {{element.description}} </div>
             </div>
             <div class="example-element-track_duration">
               <span *ngIf="element.tracks.length>0">{{element.tracks[0].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[0].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[0].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>1">{{element.tracks[1].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[1].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[1].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>2">{{element.tracks[2].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[2].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[2].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>3">{{element.tracks[3].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[3].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[3].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>4">{{element.tracks[4].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[4].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[4].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>5">{{element.tracks[5].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[5].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[5].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>6">{{element.tracks[6].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[6].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[6].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>7">{{element.tracks[7].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[7].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[7].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>8">{{element.tracks[8].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[8].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[8].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <br>
               <span *ngIf="element.tracks.length>9">{{element.tracks[9].track_title}}
                 <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[9].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>10">{{element.tracks[10].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[10].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[10].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>11">{{element.tracks[11].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[11].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[11].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>12">{{element.tracks[12].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[12].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[12].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>13">{{element.tracks[13].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[13].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[13].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>14">{{element.tracks[14].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[14].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[14].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>15">{{element.tracks[15].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[15].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[15].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>16">{{element.tracks[16].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[16].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[16].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>17">{{element.tracks[17].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[17].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[17].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>18">{{element.tracks[18].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[18].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[18].track_id,element.listid,'0',userid)">remove</a> 
               </span>
               <span *ngIf="element.tracks.length>19">{{element.tracks[19].track_title}}
-                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[19].track_title)">Play on YouTube</a> 
+                <a mat-button target="_blank" (click)="edittrack(element.tracks[19].track_id,element.listid,'0',userid)">remove</a> 
               </span>
             </div>
-            <a mat-button target="_blank" (click)="deletelist(userid,element.listid)">DELETE</a> 
+            <mat-form-field class="addtrack-field">
+              <mat-label>AddTrack</mat-label>
+              <input matInput placeholder="" #trackid>
+
+            </mat-form-field>
+
+            <a mat-button (click)="edittrack(trackid.value,element.listid,'1',userid)">add</a>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Rate Mark</mat-label>
+              <select matNativeControl [(ngModel)]="selectedRate" name="type">
+                <option *ngFor="let r of rate" [value]="r.ratemark">
+                  {{r.ratemark}}
+                </option>
+              </select>
+            </mat-form-field>
+            <a mat-button (click)="rating(selectedRate,element.listid)">submit</a>
+
           </div>
+
+          <a mat-button target="_blank" (click)="deletelist(userid,element.listid)">DELETE</a>
         </td>
       </ng-container>
     
@@ -138,4 +182,4 @@
       <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 </table>
 
-{{userid}}
+{{selectedType}}
