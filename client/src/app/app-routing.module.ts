@@ -13,7 +13,7 @@ const routes: Routes = [
   // default page
   {
     path: '',
-    redirectTo: 'example', 
+    redirectTo: 'homepage', 
     pathMatch: 'full'
   },
   //login page

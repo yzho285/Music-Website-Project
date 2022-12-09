@@ -18,6 +18,9 @@
         >
           Login
         </button>
+
+        <a class="button google" href="http://localhost:5000/login/google">Sign in with Google</a>
+
         <button mat-raised-button color="accent" class="register-btn" [routerLink]="['/register']">Register</button>
         <button 
             *ngIf="!verify"
