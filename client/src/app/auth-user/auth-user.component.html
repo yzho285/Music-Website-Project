@@ -252,9 +252,9 @@
 
           </div>
 
-          <a mat-button target="_blank" (click)="deletelist(userid,element.listid)">DELETE</a>
+          <a mat-button mat-raised-button color="warn" target="_blank" (click)="deletelist(userid,element.listid)">DELETE</a>
           <span *ngIf="element.visible=='0'">
-          <a mat-button target="_blank" (click)="publicing(userid)">PUBLIC</a>
+          <a mat-button mat-raised-button color="accent" target="_blank" (click)="publicing(userid,element.listid)">PUBLIC</a>
           </span>
         </td>
       </ng-container>

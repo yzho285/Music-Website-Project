@@ -173,7 +173,8 @@ export class HttpService {
     // data = {
     //    visible: '1',
     //    description: '',
-    //    userid: ''
+    //    userid: '',
+    //    playlistid: ''
     // }
     updateVisibleOrDescription(data:object) {
         const url = this.host + "/playlist/update"

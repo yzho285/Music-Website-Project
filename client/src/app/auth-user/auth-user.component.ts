@@ -265,19 +265,20 @@ review(revtext:string,playlistid:string){
   
 }
 //change the playlist to public
-publicing(userid:string){
+publicing(userid:string,playlistid:string){
   const pac={
     visible: '1',
     description: '',
-    userid:''
+    userid:'',
+    playlistid:''
   }
   pac.userid=userid
+  pac.playlistid=playlistid
   console.log(pac)
   this.httpService.updateVisibleOrDescription(pac)
   .then(res => {
     if (res.status === 200) {
       console.log(res);
-
       alert("Successfully set to public");
       return res.json();
     } else {
