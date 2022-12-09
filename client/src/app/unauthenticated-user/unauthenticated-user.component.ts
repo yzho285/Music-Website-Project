@@ -143,7 +143,8 @@ export class UnauthenticatedUserComponent implements OnInit {
                         "totalPlaytime":json.playlists[i]["totalPlaytime"],
                         "track_number":json.playlists[i]["tracks"].length,
                         "tracks":json.playlists[i]["tracks"],
-                        "avgrating":json.playlists[i]["avgRating"]};
+                        "avgrating":json.playlists[i]["avgRating"],
+                        "description":json.playlists[i]["description"]};
           // const temptrack = {"tracks":json.playlists[i]["tracks"]};
           console.log(temp);
           this.PublicPlayList.push(temp);
