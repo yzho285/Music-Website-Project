@@ -39,6 +39,7 @@ const expressJWT = require('express-jwt')
 // const { expressjwt: jwt } = require("express-jwt");
 // var { expressjwt: jwt } = require("express-jwt");
 
+
 const secretKey = 'IloveECE9065!!!'
 // decode jwt token
 app.use(expressJWT({ secret: secretKey, algorithms: ['HS256'] }).unless({
@@ -52,6 +53,8 @@ app.use(expressJWT({ secret: secretKey, algorithms: ['HS256'] }).unless({
         '/confirmation',
         '/admin/policy',
         '/admin/message',
+        '/login/google',
+        '/login/google/callback',
         /^\/confirmation\/.*/
     ]
 }))
@@ -107,7 +110,7 @@ app.get("/confirmation", (req, res) => {
                 res.status(404).send('User does not exist')
             } else {
                 const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
-                    expiresIn: "1h",
+                    expiresIn: "24h",
                  });
                  user = {
                     currentUser: user.email, 
@@ -155,7 +158,7 @@ app.post("/users/login", (req, res) => {
                 req.session.user = user._id;
                 req.session.email = user.email;
                 const token = jsonwebtoken.sign(user.toJSON(), secretKey, {
-                    expiresIn: "1h",
+                    expiresIn: "24h",
                  });
                  user = {
                     currentUser: user.email, 
@@ -474,8 +477,8 @@ app.post('/playlist', (req, res) => {
 
 /// delete a playlist by listID and update info by userid
 app.delete("/playlist", (req, res) => {
-    const id = req.query.listid.toString()
-    const userid = req.query.userid.toString()
+    const id = req.body.listid.toString()
+    const userid = req.body.userid.toString()
     User.findById(userid)
         .then(user => {
             let flag = false
@@ -824,6 +827,58 @@ app.post("/admin/policy", (req, res) => {
             });
     }
 });
+
+// google login
+//Import the main Passport and Express-Session library
+const passport = require('passport')
+//Import the secondary "Strategy" library
+app.use(session({
+    secret: "secret",
+    resave: false ,
+    saveUninitialized: true ,
+  }))
+// init passport on every route call.
+app.use(passport.initialize()) 
+ // allow passport to use "express-session".
+app.use(passport.session())    
+// The "authUser" is a function that we will define later will contain 
+// the steps to authenticate a user, and will return the "authenticated user".
+// const GoogleStrategy = require( 'passport-google-oauth2' ).Strategy;
+// passport.use(new GoogleStrategy({
+//     clientID:     GOOGLE_CLIENT_ID,
+//     clientSecret: GOOGLE_CLIENT_SECRET,
+//     callbackURL: "http://localhost:5000/login/google/callback",
+//     passReqToCallback   : true
+//   },
+//   function(request, accessToken, refreshToken, profile, done) {
+//     User.findOrCreate({ googleEmail: profile.email }, function (err, user) {
+//       return done(err, user);
+//     });
+//   }
+// ));
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
+
+passport.use(new GoogleStrategy({
+    clientID:     '480225921509-djnrq95jfp6hm0vnvl198kmdeci87eil.apps.googleusercontent.com',
+    clientSecret: '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',
+    callbackURL: "http://localhost:5000/login/google/callback",
+    passReqToCallback   : true
+  },
+  function(request, accessToken, refreshToken, profile, done) {
+    log(profile)
+  }
+));
+
+app.get('/login/google',
+  passport.authenticate('google', { scope:
+      [ 'email', 'profile' ] }
+));
+
+app.get( '/login/google/callback',
+    passport.authenticate( 'google', {
+        successRedirect: '/auth/google/success',
+        failureRedirect: '/auth/google/failure'
+}));
 
 
 // get a security/DMCA/AUP policy
