@@ -24,8 +24,8 @@ export class UnauthenticatedUserComponent implements OnInit {
   columnsToDisplayWithExpand = [...this.columnsToDisplay, 'expand']
   expandedElement!: PeriodicElement | null;
   PublicPlayList:any=[]
-  displayedColumnsPublicPlaylists:string[] = ['listname', 'creator', 'totalPlaytime', 'track_number']
-  columnsToDisplayPublicPlaylists:string[] =['listname', 'creator', 'totalPlaytime', 'track_number']
+  displayedColumnsPublicPlaylists:string[] = ['listname', 'creator', 'totalPlaytime', 'track_number', 'avgrating']
+  columnsToDisplayPublicPlaylists:string[] =['listname', 'creator', 'totalPlaytime', 'track_number', 'avgrating']
   columnsToDisplayWithExpandPublicPlaylists = [...this.columnsToDisplayPublicPlaylists, 'expand']
   expandedElementPublicPlaylists!: PeriodicElementPublicPlaylists | null;
   selectedType:string = ''
@@ -118,9 +118,10 @@ export class UnauthenticatedUserComponent implements OnInit {
                         "creator":json.playlists[i]["username"],
                         "totalPlaytime":json.playlists[i]["totalPlaytime"],
                         "track_number":json.playlists[i]["tracks"].length,
-                        "tracks":json.playlists[i]["tracks"]};
-          const temptrack = {"tracks":json.playlists[i]["tracks"]};
-          // console.log(temp);
+                        "tracks":json.playlists[i]["tracks"],
+                        "avgrating":json.playlists[i]["avgRating"]};
+          // const temptrack = {"tracks":json.playlists[i]["tracks"]};
+          console.log(temp);
           this.PublicPlayList.push(temp);
         }
         console.log(this.PublicPlayList);
