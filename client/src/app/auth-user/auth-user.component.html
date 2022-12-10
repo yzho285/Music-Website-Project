@@ -225,9 +225,11 @@
             </mat-form-field>
 
             <a mat-button (click)="rating(selectedRate,element.listid)">submit</a>
-            <span *ngIf="element.reviews.length>1">
+
+            <!-- <div class="reviews">
+              <span *ngIf="element.reviews.length>1">
               
-              <div class="reviews">
+              
                 <h2>reviews:</h2>
                 <span *ngIf="(element.reviews.length>1 && element.reviews[1].hidden=='0') ||role=='1'" >{{element.reviews[1].content}} 
                   <span *ngIf="element.reviews[1].hidden=='0'&&role=='1'">
@@ -237,18 +239,33 @@
                     <a mat-button target="_blank" (click)="unhide(element.listid,'2')">unhide</a>
                   </span>
                 </span>
-                <!-- <span *ngIf="(element.reviews.length>2 && element.reviews[2].hidden=='0') ||role=='1'" >{{element.reviews[2].content}} 
+                <span *ngIf="(element.reviews.length>2 && element.reviews[2].hidden=='0') ||role=='1'" >{{element.reviews[2].content}} 
                   <span *ngIf="element.reviews[2].hidden=='0'&&role=='1'">
                     <a mat-button target="_blank" (click)="hide(element.listid,'3')">hide</a>
                   </span>
                   <span *ngIf="element.reviews[2].hidden=='1'&&role=='1'">
                     <a mat-button target="_blank" (click)="unhide(element.listid,'3')">unhide</a>
                   </span>
-                </span> -->
-    
-    
+                </span>
+              </span>
+              </div> -->
+              <div class="reviews">
+                <li *ngFor="let e of element.reviews; index as i; first as isFirst">
+                  <span *ngIf="e.hidden=='0' || role == '1'" >
+                    {{e.content}} 
+                  </span>
+                  <span *ngIf="e.hidden=='0'&&role=='1'">
+                    <a mat-button mat-raised-button color="primary" target="_blank" (click)="hide(element.listid,'2')">hide</a>
+                  </span>
+                  <span *ngIf="e.hidden=='1'&&role=='1'">
+                    <a mat-button mat-raised-button color="accent" target="_blank" (click)="unhide(element.listid,'2')">unhide</a>
+                  </span>
+                </li>
+
+
               </div>
-            </span>
+
+
 
           </div>
 
