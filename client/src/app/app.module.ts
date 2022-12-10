@@ -31,6 +31,7 @@ import { AdminManageComponent } from './admin-manage/admin-manage.component';
 import { AuthUserComponent } from './auth-user/auth-user.component';
 import { MatDividerModule } from '@angular/material/divider';
 import {MatSelectModule} from '@angular/material/select';
+import { RevMnComponent } from './rev-mn/rev-mn.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import {MatSelectModule} from '@angular/material/select';
     UserInfoComponent,
     AdminManageComponent,
     UnauthenticatedUserComponent,
-    AuthUserComponent
+    AuthUserComponent,
+    RevMnComponent
   ],
   imports: [
     BrowserModule,

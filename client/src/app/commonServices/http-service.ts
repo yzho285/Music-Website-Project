@@ -26,7 +26,8 @@ export class HttpService {
             method: "get",
             headers: {
                 Accept: "application/json, text/plain, */*",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             }
         });
         return fetch(request)

@@ -7,6 +7,7 @@ import { UnauthenticatedUserComponent } from './unauthenticated-user/unauthentic
 import { UserInfoComponent } from './user-info/user-info.component'
 import { AdminManageComponent } from './admin-manage/admin-manage.component'
 import { AuthUserComponent } from './auth-user/auth-user.component';
+import { RevMnComponent } from './rev-mn/rev-mn.component'
 
 
 const routes: Routes = [
@@ -45,6 +46,10 @@ const routes: Routes = [
   {
     path: 'auth-user',
     component: AuthUserComponent
+  },
+  {
+    path: 'rev-mn',
+    component: RevMnComponent
   }
 ];
 
