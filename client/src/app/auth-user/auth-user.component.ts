@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpService } from '../commonServices/http-service';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
+import { SharedService } from '../commonServices/shared-service'
 
 
 @Component({
@@ -82,13 +83,18 @@ listForm:FormGroup = new FormGroup({
   }
 
   constructor(
-    private httpService:HttpService
+    private httpService:HttpService,
+    private sharedService:SharedService
     
     ) { 
 
     }
 
   ngOnInit(): void {
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    this.sharedService.onLoginEvent.emit(user.userName);
+    this.sharedService.onRoleEvent.emit(user.role);
+
     this.getList(this.userid)
   }
 
