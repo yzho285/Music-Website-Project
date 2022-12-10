@@ -379,19 +379,44 @@ app.get("/public/tracks", [check('keyword').isLength({ max: 50 }).trim()], (req,
                 Track.distinct("track_title")
                     .then(track => {
                         target = target.concat(track)
-                        const upper = target.map(element => {
-                            return element.toUpperCase();
-                          });
-                        const bestMatch = stringSimilarity.findBestMatch(keyword.toUpperCase(), upper)
+                        const bestMatch = stringSimilarity.findBestMatch(keyword, target)
                         log('bestMatch')
-                        log(bestMatch.bestMatch)
-                        Track.find({$or:[
-                            {"artist_name" : {$regex : bestMatch.bestMatch.target, $options: "ix"}},
-                            {"track_genres" : {$regex : bestMatch.bestMatch.target, $options: "ix"}},
+                        log(bestMatch.bestMatch.target)
+                        let result = []
+                        Track.find(
                             {"track_title" : {$regex : bestMatch.bestMatch.target, $options: "ix"}}
-                        ]}).then(
+                            // {"track_title" : {$regex : `.*${bestMatch.bestMatch.target}*.`, $options: "ix"}}
+                        ).then(
                             tracks => {
-                                res.send({ tracks });
+                                log('searching track_title: length = ' + tracks.length)
+                                result = result.concat(tracks)
+                                // {"artist_name" : {$regex : "/^" + bestMatch.bestMatch.target + "/", $options: "ix"}}
+                                Track.find(
+                                    {"artist_name" : {$regex : bestMatch.bestMatch.target, $options: "ix"}}
+                                ).then(
+                                    tracks => {
+                                        log('searching artist_name: length = ' + tracks.length)
+                                        result = result.concat(tracks)
+                                        Track.find(
+                                            {"track_genres" : {$regex : bestMatch.bestMatch.target, $options: "ix"}}
+                                        ).then(
+                                            tracks => {
+                                                log('searching track_genres: length = ' + tracks.length)
+                                                result = result.concat(tracks)
+                                                tracks = result
+                                                res.send({ tracks });
+                                            },
+                                            error => {
+                                                log(error)
+                                                res.status(500).send(error); // server error
+                                            }
+                                        );
+                                    },
+                                    error => {
+                                        log(error)
+                                        res.status(500).send(error); // server error
+                                    }
+                                );
                             },
                             error => {
                                 log(error)
@@ -702,6 +727,7 @@ app.post('/playlist/review', (req, res) => {
             } else {
                 review.id = parseInt(playlist.reviews.length) + 1
                 playlist.reviews.push(review)
+                playlist.lastModifiedTime = new Date()
                 playlist.save().then(
                     result => {
                         log('Update review success')

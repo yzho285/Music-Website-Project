@@ -48,6 +48,7 @@ export class UnauthenticatedUserComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+
     this.httpService.getCurrentLoginUser()
       .then(res => {
         if (res.status === 200) {
@@ -70,6 +71,10 @@ export class UnauthenticatedUserComponent implements OnInit {
       .catch(error => {
         console.log(error);
       })
+      
+    const user = JSON.parse(localStorage.getItem('currentUser') || '{}')
+    this.sharedService.onLoginEvent.emit(user.userName);
+    this.sharedService.onRoleEvent.emit(user.role);
   }
 
   searchTrack(inputvalue:any) {
