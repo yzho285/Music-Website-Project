@@ -11,6 +11,7 @@ export class AppComponent {
   title = 'lab4-app';
   loginStatus:string = 'Login'
   role = ''
+  adm : string=JSON.parse(localStorage.getItem('currentUser')||'{}').role
   constructor(private sharedService: SharedService, private httpService:HttpService) {
     sharedService.onLoginEvent.subscribe(
       (status:string) => {
@@ -23,7 +24,9 @@ export class AppComponent {
       }
     );
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+
+  }
 
   logOut() {
     localStorage.clear();

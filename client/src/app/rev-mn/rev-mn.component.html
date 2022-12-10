@@ -1,0 +1,54 @@
+<p>rev-mn works!</p>
+
+<!-- <table *ngIf="listResult?.length" mat-table
+       [dataSource]="listResult" multiTemplateDataRows
+       class="mat-elevation-z8">
+       <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplayAllPlaylists">
+        <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+        <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+      </ng-container>
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="expand row" (click)="(expandedAllPlaylists = expandedAllPlaylists === element ? null : element); $event.stopPropagation()">
+            <mat-icon *ngIf="expandedAllPlaylists !== element">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="expandedAllPlaylists === element">keyboard_arrow_up</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpandAllPlaylists.length">
+            <div class="example-element-detail"
+            [@detailExpand]="element == expandedAllPlaylists ? 'expanded' : 'collapsed'">
+                <div class="example-element-diagram">
+                    <div class="example-element-track_title"> {{element.listname}} </div>
+                </div>
+            </div>
+
+        </td>
+      </ng-container>
+
+</table> -->
+
+
+<div class="lists">
+    <li *ngFor="let element of listResult; index as i; first as isFirst">
+        <a>List Name:</a>
+        {{element.listname}}
+        <div class="reviews">
+            <li style="list-style-type:none;" *ngFor="let e of element.reviews; index as j; first as isFirst">
+            <span>
+                {{e.content}} 
+            </span>
+            <span *ngIf="e.hidden=='0'">
+                <a mat-button mat-raised-button color="primary" target="_blank" (click)="hide(element.listid,(j+1).toString())">hide</a>
+            </span>
+            <span *ngIf="e.hidden=='1'">
+                <a mat-button mat-raised-button color="accent" target="_blank" (click)="unhide(element.listid,(j+1).toString())">unhide</a>
+            </span>
+            </li>
+        </div>
+
+    </li>
+
+</div>
