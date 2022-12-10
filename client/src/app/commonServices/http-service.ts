@@ -17,6 +17,21 @@ export class HttpService {
         const url = this.host + "/users/check-session";
         return fetch(url)
     }
+
+    getAllPlaylist() {
+        // const url = this.host + "/public/allplaylists";
+        // return fetch(url)
+        const url = this.host + "/public/allplaylists";
+        const request = new Request(url, {
+            method: "get",
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        });
+        return fetch(request)
+    }
+
     // login
     loginService(data:object) {
         const url = this.host + "/users/login";
