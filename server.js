@@ -357,6 +357,19 @@ app.get("/public/playlists", (req, res) => {
     );
 });
 
+// Get all playlist
+app.get("/public/allplaylists", (req, res) => {
+    Playlist.find().sort({lastModifiedTime: -1}).then(
+        playlists => {
+            log('Playlists number: ' + playlists.length)
+            res.send({ playlists });
+        },
+        error => {
+            res.status(500).send(error); // server error
+        }
+    );
+});
+
 
 // search tracks by one keyword (artist genre title)
 // /public/tracks?keyword=xxx
