@@ -250,15 +250,10 @@
               </span>
               </div> -->
               <div class="reviews">
-                <li *ngFor="let e of element.reviews; index as i; first as isFirst">
-                  <span *ngIf="e.hidden=='0' || role == '1'" >
+                <h2>reviews:</h2>
+                <li style="list-style-type:none;" *ngFor="let e of element.reviews; index as i; first as isFirst">
+                  <span *ngIf="e.hidden=='0'" >
                     {{e.content}} 
-                  </span>
-                  <span *ngIf="e.hidden=='0'&&role=='1'">
-                    <a mat-button mat-raised-button color="primary" target="_blank" (click)="hide(element.listid,'2')">hide</a>
-                  </span>
-                  <span *ngIf="e.hidden=='1'&&role=='1'">
-                    <a mat-button mat-raised-button color="accent" target="_blank" (click)="unhide(element.listid,'2')">unhide</a>
                   </span>
                 </li>
 
