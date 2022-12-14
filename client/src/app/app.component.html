@@ -12,7 +12,7 @@
 
   <a *ngIf="loginStatus !== 'Login'" class="example-btn" [routerLink]="['/auth-user']" routerLinkActive="router-link-active">lists</a>
 
-  <a *ngIf="role==='1'" class="example-btn" [routerLink]="['/rev-mn']" routerLinkActive="router-link-active">review management</a>
+  <a *ngIf="loginStatus !== 'Login' && role === '1'" class="example-btn" [routerLink]="['/rev-mn']" routerLinkActive="router-link-active">review management</a>
 
   <span class="toolbar-spacer2"></span>
   <a 
