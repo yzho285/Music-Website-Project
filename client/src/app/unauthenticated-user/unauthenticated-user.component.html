@@ -1,0 +1,182 @@
+<p>This is a music database app. Unauthorized, authorized user and admin user have different function</p>
+<p>Unauthorized user can see a public playlist and search tracks</p>
+<p>Authorized user can also manage private playlist</p>
+<p>Admin user can do operations to manage the dataset</p>
+<form class="searchTrack">
+    <mat-form-field class="searchTrack-input">
+      <mat-label>Input artist name, genre and track titke</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #searchTrackinput>
+    </mat-form-field>
+    <button type='button' mat-button (click)="searchTrack(searchTrackinput.value)"
+       style="background-color:aqua">Search</button>
+</form>
+
+
+<table *ngIf="searchTrackResult?.length" mat-table
+       [dataSource]="searchTrackResult" multiTemplateDataRows
+       class="mat-elevation-z8">
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+    <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+    <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+  </ng-container>
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <div class="example-element-Youtube-Link"> 
+        <a mat-button href="YoutubeLink" target="_blank" (click)="goToYoutube(element)" style="background-color:brown">Play on YouTube</a> 
+      </div>
+      <button mat-icon-button aria-label="expand row" (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+        <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+        <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpand.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+        <div class="example-element-diagram">
+          <div class="example-element-track_title"> {{element.track_title}} </div>
+          <div class="example-element-artist_name"> {{element.artist_name}} </div>
+        </div>
+        <div class="example-element-track_duration">
+          track_duration:{{element.track_duration}};track_favorites:{{element.track_favorites}};album_title:{{element.album_title}};track_date_created:{{element.track_date_created}}
+          <span class="example-element-description-attribution"></span>
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpand;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElement === element"
+      (click)="expandedElement = expandedElement === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>
+
+
+
+<button type='button' mat-button (click)="getPublicPlaylist()" style="background-color:aqua">Get Public Playlists</button>
+<table *ngIf="PublicPlayList?.length" mat-table
+       [dataSource]="PublicPlayList" multiTemplateDataRows
+       class="mat-elevation-z8">
+  <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplayPublicPlaylists">
+    <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+    <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+  </ng-container>
+  <ng-container matColumnDef="expand">
+    <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button aria-label="expand row" (click)="(expandedElementPublicPlaylists = expandedElementPublicPlaylists === element ? null : element); $event.stopPropagation()">
+        <mat-icon *ngIf="expandedElementPublicPlaylists !== element">keyboard_arrow_down</mat-icon>
+        <mat-icon *ngIf="expandedElementPublicPlaylists === element">keyboard_arrow_up</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
+  <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+  <ng-container matColumnDef="expandedDetail">
+    <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplayWithExpandPublicPlaylists.length">
+      <div class="example-element-detail"
+           [@detailExpand]="element == expandedElementPublicPlaylists ? 'expanded' : 'collapsed'">
+        <div class="example-element-diagram">
+          <div class="example-element-track_title"> {{element.listname}} </div>
+          <div class="example-element-artist_name"> {{element.creator}} </div>
+        </div>
+        <div class="example-element-track_duration">
+          <div>description:{{element.description}}</div>
+          <span *ngIf="element.tracks.length>0">{{element.tracks[0].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[0].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>1">{{element.tracks[1].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[1].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>2">{{element.tracks[2].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[2].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>3">{{element.tracks[3].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[3].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>4">{{element.tracks[4].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[4].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>5">{{element.tracks[5].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[5].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>6">{{element.tracks[6].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[6].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>7">{{element.tracks[7].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[7].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>8">{{element.tracks[8].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[8].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+          <br>
+          <span *ngIf="element.tracks.length>9">{{element.tracks[9].track_title}}
+            <a mat-button target="_blank" (click)="goToYoutubeplaylist(element.tracks[9].track_title)" style="background-color:brown">Play on YouTube</a> 
+          </span>
+
+        </div>
+      </div>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpandPublicPlaylists"></tr>
+  <tr mat-row *matRowDef="let element; columns: columnsToDisplayWithExpandPublicPlaylists;"
+      class="example-element-row"
+      [class.example-expanded-row]="expandedElementPublicPlaylists === element"
+      (click)="expandedElementPublicPlaylists = expandedElementPublicPlaylists === element ? null : element">
+  </tr>
+  <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>
+
+<form class="requestCopyright">
+    <mat-form-field class="requestCopyright-input">
+      <mat-label>Input content</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #requestCopyright>
+    </mat-form-field>
+    <mat-form-field class="requestCopyright-input">
+      <mat-label>Input email address</mat-label>
+      <input matInput placeholder="Ex. artist name, genre and track titke" #requestCopyrightEmail>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Request type</mat-label>
+        <select matNativeControl [(ngModel)]="selectedType" name="type">
+          <option *ngFor="let requesttype of requesttypes" [value]="requesttype.requestTypes">
+            {{requesttype.requestTypes}}
+          </option>
+        </select>
+      </mat-form-field>
+    <a mat-button target="_blank" (click)="requestCopyrightFunc(requestCopyright.value,requestCopyrightEmail.value)" style="background-color:aqua">Submit</a>
+</form>
+
+<button type='button' mat-button (click)="getallPolicy()" style="background-color:aqua">Click to See Policis</button>
+<table *ngIf="policy?.length"  mat-table [dataSource]="policy" class="mat-elevation-z8">
+    <ng-container matColumnDef="security">
+      <th mat-header-cell *matHeaderCellDef> security policy </th>
+      <td mat-cell *matCellDef="let element"> {{element.security}} </td>
+    </ng-container>
+    <ng-container matColumnDef="DMCA">
+      <th mat-header-cell *matHeaderCellDef> DMCA policy </th>
+      <td mat-cell *matCellDef="let element"> {{element.DMCA}} </td>
+    </ng-container>
+    <ng-container matColumnDef="AUP">
+      <th mat-header-cell *matHeaderCellDef> AUP policy </th>
+      <td mat-cell *matCellDef="let element"> {{element.AUP}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsPolicy"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumnsPolicy"></tr>
+  </table>
