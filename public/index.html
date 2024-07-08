@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ECE 9065 Lab 3</title>
+<meta name="description" content="">
+<meta name="author" content="Haosheng Zhang">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!-- Place your content here -->
+<script defer src='js/lab3.js'></script>
+    <h1 class="page-title">ECE 9065 Lab 3 Music DataBase</h1>
+    <div class="main-body-wrapper">
+        <!-- search boxes -->
+        <div class="search">
+            <ul class="search-items">
+                <li>
+                    (Back-end #item 1) <button onclick="getAllGenres()">Get All Genres</button>
+                </li>
+                <li>
+                    <form class="query-artist">
+                        <label for="search-artist-id"> (Back-end #item 2) Query Artist By ID:</label>
+                        <input type="text" id="search-artist-id" name="search-artist-id" autocomplete="off" maxlength="10">
+                        <input type="button" onclick="queryArtistByID()" value="Search">
+                    </form>
+                </li>
+                <li>
+                    <form class="query-track">
+                        <label for="search-track-id"> (Back-end #item 3) Query Track By ID:</label>
+                        <input type="text" id="search-track-id" name="search-track-id" autocomplete="off" maxlength="10">
+                        <input type="button" onclick="queryTrackByID()" value="Search">
+                    </form>
+                </li>
+                <li>
+                    <form class="query-n-tracks">
+                        <label for="search-n-track-id"> (Back-end #item 4) Query 5 Track IDs Each Time By Track Title or Album Title:</label>
+                        <input type="text" id="search-n-track-id" name="search-n-track-id" autocomplete="off" maxlength="100">
+                        <input type="button" onclick="queryNTracks()" value="Search">
+                    </form>
+                </li>
+                <li>
+                    <form class="query-artist-by-name">
+                        <label for="search-artist-by-name"> (Back-end #item 5) Query All Artist IDs by Artist Name:</label>
+                        <input type="text" id="search-artist-by-name" name="search-artist-by-name" autocomplete="off" maxlength="100">
+                        <input type="button" onclick="queryArtistsByName()" value="Search">
+                    </form>
+                </li>
+                <li>
+                    <form class="create-new-track-list">
+                        <label for="create-track-list-by-name">(Back-end #item 6) Create new Track List by Name:</label>
+                        <input type="text" id="create-track-list-by-name" name="create-track-list-by-name" autocomplete="off" maxlength="50">
+                        <input type="button" onclick="createTrackListByName()" value="Create">
+                    </form>
+                </li><li class="save-ids-to-the-list">
+                    (Back-end #item 7)
+                    <form class="enter-track-ids">
+                        <label for="track-ids">Enter a list of track IDs you want to save:</label>
+                        <input type="text" id="track-ids" name="track-ids" autocomplete="off" maxlength="200">
+                    </form>
+                    <form class="enter-list-name">
+                        <label for="save-track-ids-to-list">Enter the List Name you want to save to:</label>
+                        <input type="text" id="save-track-ids-to-list" name="save-track-ids-to-list" autocomplete="off" maxlength="50">
+                        <input type="button" onclick="addTrackIDs()" value="Save">
+                    </form>
+                </li>
+                <li>
+                    <form class="get-all-id-for-given-list">
+                        <label for="get-track-ids-for-given-list">(Back-end #item 8) Get all Track IDs by List Name:</label>
+                        <input type="text" id="get-track-ids-for-given-list" name="get-track-ids-for-given-list" autocomplete="off" maxlength="50">
+                        <input type="button" onclick="queryTrackIDInList()" value="Get">
+                    </form>
+                </li>
+                <li>
+                    <form class="delete-track-list-by-name">
+                        <label for="delete-tracklist-by-name">(Back-end #item 9) Delete Track List by Name:</label>
+                        <input type="text" id="delete-tracklist-by-name" name="delete-tracklist-by-name" autocomplete="off" maxlength="50">
+                        <input type="button" onclick="deleteTrackListByName()" value="Delete">
+                    </form>
+                </li>
+                <li>
+                    (Back-end #item 10) <button onclick="getAllTrackLists()">Get All Track Lists</button>
+                </li>
+                <li>
+                    <form class="search-music-data">
+                        <label for="get-music-data">(Front-end #item 1) Query Music Data:</label>
+                        <input type="text" id="get-music-data" name="get-music-data" autocomplete="off" maxlength="100">
+                        <select id="search-type">
+                            <option value ="1">Search by Track Title</option>
+                            <option value ="2">Search by Artist Name</option>
+                            <option value="3">Search by Album Title</option>
+                        </select>
+                        <select id="music-data-sort-options">
+                            <option value ="1">Default Order</option>
+                            <option value ="2">Sort by Artist Name</option>
+                            <option value ="3">Sort by Track Title</option>
+                            <option value="4">Sort by Album Title</option>
+                            <option value="5">Sort by Playtime</option>
+                        </select>
+                        <input type="button" onclick="queryMusicData()" value="Search">
+                    </form>
+                </li>
+                <li>
+                    <form class="get-tracks-for-given-list">
+                        <label for="get-track-info-for-given-list">(Front-end #item 2) Get all Track Info by List Name:</label>
+                        <input type="text" id="get-track-info-for-given-list" name="get-track-info-for-given-list" autocomplete="off" maxlength="50">
+                        <select id="sort-options">
+                            <option value ="1">Default Order</option>
+                            <option value ="2">Sort by Artist Name</option>
+                            <option value ="3">Sort by Track Title</option>
+                            <option value="4">Sort by Album Title</option>
+                            <option value="5">Sort by Playtime</option>
+                        </select>
+                        <input type="button" onclick="queryTrackInfoInList()" value="Get">
+                    </form>
+                </li>
+                <li>
+                    <button onclick="clearResult('clear')">Clear</button>
+                </li>
+            </ul>
+        </div>
+        <div class="result-area">
+            <h3 id="result-title" class="result-title"></h2>
+            <div id="backend-result" class="backend-result">
+                <ul id="simple-backend-result-lst" class="simple-backend-result-lst"></ul>
+                <div id="artist-info" class="artist-info">
+                    <!-- <table id="track-lists" class="track-lists"></table> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer references -->
+    <!-- <footer>
+        <div class="reference">
+            <h3>References</h3>
+            <p>
+                <a class="ref-link" href="https://www.kaggle.com/kvpratama/pokemon-images-dataset">
+                    1. Pokemon Data Set > 
+                </a>
+            </p>
+            <p>
+                <a class="ref-link" href="https://www.reddit.com/r/TheSilphRoad/comments/7p952h/pokemon_go_pokedex_spreadsheet/">
+                    2. Pokemon Excel > 
+                </a>
+            </p>
+        </div>
+    </footer> -->
+
+<!-- Embedded JavaScript go here -->
+</body>
+</html>
